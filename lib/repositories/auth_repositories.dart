@@ -33,7 +33,8 @@ class AuthRepository{
           (DocumentReference doc) async{
             // developer.log("my document is ${doc.id}");
             await userRef.doc(doc.id).update({
-              "id":doc.id
+              "id":doc.id,
+              "about":""
             });
           }
       );
@@ -101,8 +102,20 @@ class AuthRepository{
       return model;
 
     }catch(err){
+      print("REPO ERROR");
       rethrow;
+    }
+  }
 
+  Future<bool> changePassword(String password, String id) async {
+    try {
+      var res = await FirebaseService.firebaseAuth.currentUser?.updatePassword(password);
+      userRef.doc(id).update({
+       "password": password,
+      });
+      return true;
+    } catch (err) {
+      rethrow;
     }
   }
 

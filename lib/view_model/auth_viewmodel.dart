@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../models/user_model.dart';
 import '../repositories/auth_repositories.dart';
+import 'message_viewmodel.dart';
 
 class AuthViewModel with ChangeNotifier{
 
@@ -38,6 +39,7 @@ class AuthViewModel with ChangeNotifier{
       print(_loggedInUser?.myFriends);
 
       await getFriendsDetail(_loggedInUser!.myFriends!);
+      // await MessageViewModel().showMessage();
 
       notifyListeners();
     } catch(err){
@@ -50,14 +52,16 @@ class AuthViewModel with ChangeNotifier{
   Future<void> addUser(UserModel model, String id, String email)  async{
 
     try{
-
       _loggedInUser= await AuthRepository().addUser(model, id, email);
-
+      if(_loggedInUser== null){
+        throw Exception("Email not found");
+      }
       getFriendsDetail(loggedInUser!.myFriends!);
       notifyListeners();
 
 
     } catch(err){
+      print("VM ERR :: " + err.toString());
       rethrow;
     }
 
@@ -76,6 +80,17 @@ class AuthViewModel with ChangeNotifier{
 
     }
     notifyListeners();
+  }
+
+  Future<void> changePassword(String password, String id) async {
+    try {
+      await AuthRepository().changePassword(password, id);
+      _loggedInUser?.password = password;
+      print(_loggedInUser?.password);
+      notifyListeners();
+    } catch (err) {
+      rethrow;
+    }
   }
 
 
