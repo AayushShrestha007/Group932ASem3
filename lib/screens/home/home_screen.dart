@@ -1,12 +1,14 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ez_text/service/APIs.dart';
-import 'package:ez_text/view/Widgets/chat_user_card.dart';
+import 'package:ez_text/services/firebase_service.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../model/user_model.dart';
+import '../../Widgets/chatuser_card.dart';
+import '../../models/user_model.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key});
@@ -22,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
-    APIs.getSelfInfo();
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -110,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         controller: _tabController,
         children: [
           StreamBuilder<QuerySnapshot>(
-            stream: APIs.getAllUsers(),
+            stream: FirebaseService.db.collection("users").snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -129,8 +130,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 );
               }else{
                 return Center(
-                  child: Text("No Users Found",
-                  style:TextStyle(fontSize: 40))
+                    child: Text("No Users Found",
+                        style:TextStyle(fontSize: 40))
                 );
               }
 

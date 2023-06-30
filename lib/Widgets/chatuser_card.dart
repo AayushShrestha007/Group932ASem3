@@ -1,8 +1,9 @@
-import 'package:ez_text/view/ChatScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../model/user_model.dart';
+import '../models/user_model.dart';
+
+
 
 class ChatUserCard extends StatefulWidget {
   final UserModel user;
@@ -28,7 +29,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
       color: Colors.transparent, // Make the card background transparent
       child: InkWell(
         onTap: ( ) {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen()));
+          // Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen()));
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),

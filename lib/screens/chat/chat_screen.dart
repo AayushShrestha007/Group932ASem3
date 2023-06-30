@@ -2,12 +2,14 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:ez_text/models/user_model.dart';
+import 'package:ez_text/view_model/auth_viewmodel.dart';
+import 'package:ez_text/view_model/message_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 
-import '../service/APIs.dart';
-import 'main.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -17,7 +19,40 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  bool isOnline = true; // Example boolean to determine online/offline status
+
+  late MessageViewModel _messageViewModel;
+  late AuthViewModel _authViewModel;
+  bool isOnline = true;
+  UserModel? receiverUserModel;
+
+  TextEditingController _messageController= new TextEditingController();
+
+  @override
+  void initState() {
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+      _messageViewModel = Provider.of<MessageViewModel>(context, listen: false);
+      setState(() {
+        receiverUserModel= ModalRoute.of(context)?.settings.arguments as UserModel;
+      });
+    });
+    super.initState();
+
+  }
+
+
+  Future<void> sendMessage(String msg, String fromId, String toId ) async {
+    try{
+      await _messageViewModel.sendMessaege(msg, fromId, toId);
+      _messageController.clear();
+    }
+
+    catch(e){
+      print(e.toString());
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,44 +64,53 @@ class _ChatScreenState extends State<ChatScreen> {
           toolbarHeight: 80,
           flexibleSpace: _appBar(),
         ),
-        body: Column(
-          children: [
-            Expanded(
-              child: StreamBuilder<QuerySnapshot>(
-                stream: APIs.getAllMessages(),
-                builder: (context, snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                    case ConnectionState.none:
-                      return const Center(child: CircularProgressIndicator());
-                    case ConnectionState.active:
-                    case ConnectionState.done:
-                    // final data=snapshot.data?.docs;
-                    // log('Data: ${jsonEncode(data![0].data())}');
-                      final list = [];
-
-                      if (list.isNotEmpty) {
-                        return ListView.builder(
-                          itemCount: list.length,
-                          physics: BouncingScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return Text("Message: ${list[index]}");
-                          },
-                        );
-                      } else {
-                        return Center(
-                          child: Text(
-                            "Say Hiii 👋",
-                            style: TextStyle(fontSize: 30),
-                          ),
-                        );
-                      }
-                  }
-                },
+        body:
+        receiverUserModel == null ? CircularProgressIndicator() :
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+              color: Color(0xff4e91fb),
+          height: MediaQuery.of(context).size.height-170 ,
+          width: double.infinity,
               ),
-            ),
-            _chatInput(),
-          ],
+              // Expanded(
+                // child: StreamBuilder<QuerySnapshot>(
+                //   stream: APIs.getAllMessages(),
+                //   builder: (context, snapshot) {
+                //     switch (snapshot.connectionState) {
+                //       case ConnectionState.waiting:
+                //       case ConnectionState.none:
+                //         return const Center(child: CircularProgressIndicator());
+                //       case ConnectionState.active:
+                //       case ConnectionState.done:
+                //       // final data=snapshot.data?.docs;
+                //       // log('Data: ${jsonEncode(data![0].data())}');
+                //         final list = [];
+                //
+                //         if (list.isNotEmpty) {
+                //           return ListView.builder(
+                //             itemCount: list.length,
+                //             physics: BouncingScrollPhysics(),
+                //             itemBuilder: (context, index) {
+                //               return Text("Message: ${list[index]}");
+                //             },
+                //           );
+                //         } else {
+                //           return Center(
+                //             child: Text(
+                //               "Say Hiii 👋",
+                //               style: TextStyle(fontSize: 30),
+                //             ),
+                //           );
+                //         }
+                //     }
+                //   },
+                // ),
+              // ),
+              _chatInput(),
+            ],
+          ),
         ),
       ),
     );
@@ -93,7 +137,7 @@ class _ChatScreenState extends State<ChatScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Username", // Replace with actual username from database
+                "${ receiverUserModel?.name==null ? "Loading" : receiverUserModel!.name!}",
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black,
@@ -149,6 +193,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 Expanded(
                   child: TextField(
+                    controller: _messageController,
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
                     decoration: InputDecoration(
@@ -179,16 +224,22 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
         ),
-        MaterialButton(
-          onPressed: () {},
-          minWidth: 0,
-          padding: const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 5),
-          shape: const CircleBorder(),
-          color: Colors.blueAccent,
-          child: const Icon(
-            Icons.arrow_forward_outlined,
-            color: Colors.white,
-            size: 28,
+        Consumer<AuthViewModel>(
+          builder: (context, _authViewModel, child)=>
+            MaterialButton(
+            onPressed: () {
+              sendMessage(_messageController.text, _authViewModel!.loggedInUser!.id!, receiverUserModel!.id! );
+
+            },
+            minWidth: 0,
+            padding: const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 5),
+            shape: const CircleBorder(),
+            color: Colors.blueAccent,
+            child: const Icon(
+              Icons.arrow_forward_outlined,
+              color: Colors.white,
+              size: 28,
+            ),
           ),
         ),
       ],

@@ -1,24 +1,63 @@
-import 'package:ez_text/view/registration_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../models/user_model.dart';
+import '../../view_model/auth_viewmodel.dart';
 
-import 'HomeScreen.dart';
-
-class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
-
+class RegisterScreen extends StatefulWidget {
+  
   @override
-  State<Login> createState() => _LoginState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginState extends State<Login> {
+class _RegisterScreenState extends State<RegisterScreen> {
+
+
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _phoneNumberController = TextEditingController();
+
+
+  late AuthViewModel _authViewModel;
+
+  @override
+  void initState() {
+    // _ui = Provider.of<GlobalUIViewModel>(context, listen: false);
+    _authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+    super.initState();
+  }
+
+  void register() async {
+    try {
+      await _authViewModel.register(
+          UserModel(
+            email: _emailController.text,
+            name: _nameController.text,
+            password: _passwordController.text,
+
+          )
+      ).then((value) {
+
+        Navigator.of(context).pushReplacementNamed("/login");
+      })
+          .catchError((e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(e.message.toString())));
+      });
+    } catch (err) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(err.toString())));
+    }
+
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text('Create an Account'),
       ),
       body: Stack(
         children: [
@@ -29,10 +68,10 @@ class _LoginState extends State<Login> {
           ),
           Positioned(
             top: -200,
-            right: -145,
+            right: -100,
             child: Container(
-              height: 690,
-              width: 650,
+              height: 635,
+              width: 635,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Color(0xFF2977F6),
@@ -40,11 +79,11 @@ class _LoginState extends State<Login> {
             ),
           ),
           Positioned(
-            top: MediaQuery.of(context).padding.top + 5,
-            right: 20,
+            top: 0,
+            right: 0,
             child: Image.asset(
-              'assets/images/Login.png',
-              height: 150,
+              'assets/images/SignUp.png',
+              height: 110,
               width: 150,
             ),
           ),
@@ -52,13 +91,13 @@ class _LoginState extends State<Login> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 200.0, bottom: 16.0),
+                  Align(
+                    alignment: Alignment.topLeft,
                     child: Text(
-                      'Log in',
+                      'Sign up',
                       style: TextStyle(
                         fontSize: 24,
                         fontFamily: 'Rubik',
@@ -67,15 +106,16 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 15),
+                  SizedBox(height: 16),
                   TextFormField(
+                    controller: _nameController,
                     style: TextStyle(
                       color: Colors.white,
                       fontFamily: 'Rubik',
                       fontWeight: FontWeight.bold,
                     ),
                     decoration: InputDecoration(
-                      labelText: 'Username or Email',
+                      labelText: 'Full Name',
                       filled: true,
                       fillColor: Color(0xFF88ADEA),
                       border: OutlineInputBorder(
@@ -83,13 +123,49 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 15),
+                  SizedBox(height: 16),
                   TextFormField(
+                    // controller: numberController,
                     style: TextStyle(
                       color: Colors.white,
                       fontFamily: 'Rubik',
                       fontWeight: FontWeight.bold,
                     ),
+                    decoration: InputDecoration(
+                      labelText: 'Phone Number',
+                      filled: true,
+                      fillColor: Color(0xFF88ADEA),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  TextFormField(
+                    controller: _emailController,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Rubik',
+                      fontWeight: FontWeight.bold,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      filled: true,
+                      fillColor: Color(0xFF88ADEA),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  TextFormField(
+                    controller: _passwordController,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Rubik',
+                      fontWeight: FontWeight.bold,
+                    ),
+                    obscureText: true,
                     decoration: InputDecoration(
                       labelText: 'Password',
                       filled: true,
@@ -99,31 +175,10 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 5), // Reduced the gap here
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: TextButton(
-                      onPressed: () {
-                        // Add your forgot password action here
-                      },
-                      child: Text(
-                        'Forgot password?',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontFamily: 'Rubik',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 30),
+                  SizedBox(height: 53),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => HomeScreen()),
-                      );
+                      register();
                     },
                     style: ElevatedButton.styleFrom(
                       primary: Color(0xFF2086B1),
@@ -132,22 +187,15 @@ class _LoginState extends State<Login> {
                       ),
                       minimumSize: Size(double.infinity, 50),
                     ),
-                    child: Text(
-                      'Continue',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontFamily: 'Rubik',
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
+
+                    child: Text("Register"),
                   ),
                   SizedBox(height: 16),
                   Container(
                     alignment: Alignment.center,
                     child: RichText(
                       text: TextSpan(
-                        text: 'Don\'t have an account? ',
+                        text: 'Already have an account? ',
                         style: TextStyle(
                           color: Colors.black,
                           fontFamily: 'Rubik',
@@ -155,7 +203,7 @@ class _LoginState extends State<Login> {
                         ),
                         children: [
                           TextSpan(
-                            text: 'Sign Up',
+                            text: 'Sign In',
                             style: TextStyle(
                               color: Color(0xFF35809F),
                               fontFamily: 'Rubik',
@@ -163,7 +211,8 @@ class _LoginState extends State<Login> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => RegistrationPage()));
+                              Navigator.of(context).pushNamed("/login");
+                                // Handle sign in link tapped
                               },
                           ),
                         ],
@@ -179,3 +228,9 @@ class _LoginState extends State<Login> {
     );
   }
 }
+
+  
+
+
+
+
