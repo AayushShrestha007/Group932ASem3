@@ -81,14 +81,31 @@ class _EditProfileState extends State<EditProfile> {
                   child: CircleAvatar(
                     radius: 87,
                     backgroundColor: Colors.white,
-                    child: CircleAvatar(
-                      radius: 85,
-                      backgroundImage: NetworkImage('https://picsum.photos/id/237/200/300'),
-                      backgroundColor: Colors.blue,
-                      onBackgroundImageError: (e, s) {
-                        debugPrint('image issue, $e,$s');
-                      },
+                    child: ClipOval(
+                      child: (_selectedImage != null)
+                          ? Image.file(
+                        _selectedImage!,
+                        fit: BoxFit.fill,
+                        width: double.infinity,
+                      )
+                          : Image.network(
+                        "https://picsum.photos/id/237/200/300",
+                        fit: BoxFit.fill,
+                        width: double.infinity,
+                      ),
                     ),
+                    // child: CircleAvatar(
+                    //   radius: 85,
+                    //   backgroundImage:
+                    //   _selectedImage == null ?
+                    //   NetworkImage('https://picsum.photos/id/237/200/300')
+                    //       :
+                    //       FileImage(_selectedImage!),
+                    //   backgroundColor: Colors.blue,
+                    //   onBackgroundImageError: (e, s) {
+                    //     debugPrint('image issue, $e,$s');
+                    //   },
+                    // ),
                   ),
                 ),
               ),
