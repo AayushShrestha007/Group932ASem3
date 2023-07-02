@@ -3,10 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-<<<<<<< HEAD
   file_selector_windows
-=======
->>>>>>> Ayush
   firebase_core
 )
 

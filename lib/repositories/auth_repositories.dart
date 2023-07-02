@@ -121,6 +121,19 @@ class AuthRepository{
 
 
 
+  Future<bool> changeBio(String bio, String id) async {
+    try {
+
+      userRef.doc(id).update({
+        "about": bio,
+      });
+      return true;
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+
 
 
 }

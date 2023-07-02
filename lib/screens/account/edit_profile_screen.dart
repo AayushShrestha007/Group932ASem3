@@ -45,6 +45,14 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
+  void changeBio(String bio, String id) async{
+    try {
+      await _authViewModel.changeBio(bio, id);
+    } catch(e){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error")));
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -154,6 +162,7 @@ class _EditProfileState extends State<EditProfile> {
                       child: ElevatedButton(
                         onPressed: (){
                           changePassword(_passwordController.text, _authViewModel!.loggedInUser!.id!);
+                          changeBio(_bioController.text, _authViewModel!.loggedInUser!.id!);
                         },
                         style: ElevatedButton.styleFrom(
                           // primary: Colors.redAccent, //background color of button

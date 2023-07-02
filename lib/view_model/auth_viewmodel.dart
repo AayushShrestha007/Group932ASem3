@@ -68,6 +68,9 @@ class AuthViewModel with ChangeNotifier{
   }
 
 
+
+
+
   Future<void> getFriendsDetail(List<String> ids) async{
     print(ids);
     _friendsList= [];
@@ -92,6 +95,22 @@ class AuthViewModel with ChangeNotifier{
       rethrow;
     }
   }
+
+  Future<void> changeBio(String bio, String id) async {
+    try {
+      await AuthRepository().changeBio(bio, id);
+      _loggedInUser?.about = bio;
+      print("wassup");
+      print(_loggedInUser?.about);
+      notifyListeners();
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+
+
+
 
 
 }
