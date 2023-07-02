@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ez_text/services/firebase_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -91,6 +93,29 @@ class AuthViewModel with ChangeNotifier{
       rethrow;
     }
   }
+
+  Future<String?> uploadProfileImage(File image) async {
+    try {
+      String? imageUrl =
+      await AuthRepository().uploadProfileImage(image, loggedInUser!);
+      return imageUrl;
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateUserProfile(UserModel user) async {
+    try {
+      await AuthRepository().updateUserProfile(user);
+      _loggedInUser = user;
+      notifyListeners();
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+
+
 
 
 }

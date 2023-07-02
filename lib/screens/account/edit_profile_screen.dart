@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../view_model/auth_viewmodel.dart';
@@ -60,6 +61,25 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
+  Future<void> _updateProfile() async {
+    if (_selectedImage != null) {
+      // Upload image to Firebase Storage and get the URL
+      String? imageUrl = await _authViewModel.uploadProfileImage(_selectedImage!);
+
+      if (imageUrl != null) {
+        // Update the image URL in the user model
+        _authViewModel.loggedInUser!.image = imageUrl;
+
+        // Save the updated profile to the database
+        await _authViewModel.updateUserProfile(_authViewModel.loggedInUser!);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to upload profile image")),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,123 +109,47 @@ class _EditProfileState extends State<EditProfile> {
                         width: double.infinity,
                       )
                           : Image.network(
-                        "https://picsum.photos/id/237/200/300",
+                        _authViewModel.loggedInUser!.image ??
+                            "https://picsum.photos/id/237/200/300",
                         fit: BoxFit.fill,
                         width: double.infinity,
                       ),
                     ),
-                    // child: CircleAvatar(
-                    //   radius: 85,
-                    //   backgroundImage:
-                    //   _selectedImage == null ?
-                    //   NetworkImage('https://picsum.photos/id/237/200/300')
-                    //       :
-                    //       FileImage(_selectedImage!),
-                    //   backgroundColor: Colors.blue,
-                    //   onBackgroundImageError: (e, s) {
-                    //     debugPrint('image issue, $e,$s');
-                    //   },
-                    // ),
                   ),
                 ),
               ),
-
-              SizedBox(
-                height: 20,
-              ),
-
-              TextFormField(
-                controller: _bioController,
-                decoration: InputDecoration(
-                  hintText: "Type Bio...",
-                  filled: true,
-                  fillColor: Colors.transparent,
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      width: 3,
-                      color: Colors.black26,
-                    ),
-                  ),
-                ),
-              ),
-
-              SizedBox(
-                height: 50,
-              ),
-
+              SizedBox(height: 20),
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: 'Name',
-                  filled: true,
-                  fillColor: Colors.transparent,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
+                decoration: InputDecoration(labelText: 'Name'),
               ),
-
-              SizedBox(
-                height: 20,
-              ),
-
+              SizedBox(height: 10),
               TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  filled: true,
-                  fillColor: Colors.transparent,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
+                decoration: InputDecoration(labelText: 'Email'),
               ),
-
-              SizedBox(
-                height: 20,
-              ),
-
+              SizedBox(height: 10),
               TextFormField(
                 controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  filled: true,
-                  fillColor: Colors.transparent,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
+                decoration: InputDecoration(labelText: 'Password'),
+              ),
+              SizedBox(height: 10),
+              TextFormField(
+                controller: _bioController,
+                decoration: InputDecoration(labelText: 'Bio'),
               ),
 
-              SizedBox(
-                height: 30,
-              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  _updateProfile();
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      Navigator.of(context).pushNamed("/userselect");
+                    };
+                },
+                child: Text('Update Profile'),
 
-              Consumer<AuthViewModel>(
-                builder: (context, _authViewModel, child) => SizedBox(
-                  height: 70,
-                  width: 200,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      changePassword(
-                        _passwordController.text,
-                        _authViewModel.loggedInUser!.id!,
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      elevation: 3,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: Text(
-                      "Update Profile",
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                ),
               ),
             ],
           ),

@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ez_text/services/firebase_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import '../models/user_model.dart';
 import 'dart:developer' as developer;
 
@@ -115,6 +117,31 @@ class AuthRepository{
       });
       return true;
     } catch (err) {
+      rethrow;
+    }
+  }
+
+  Future<String?> uploadProfileImage(File image, UserModel user) async {
+    try {
+      String imageName = DateTime.now().millisecondsSinceEpoch.toString();
+      String imagePath = "profile_images/$imageName.jpg";
+      TaskSnapshot snapshot = await FirebaseService.storageRef
+
+          .child(imagePath)
+          .putFile(image);
+      String downloadUrl = await snapshot.ref.getDownloadURL();
+      return downloadUrl;
+    } catch (err) {
+      print("REPO ERR :: " + err.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> updateUserProfile(UserModel user) async {
+    try {
+      await userRef.doc(user.id).update(user.toJson());
+    } catch (err) {
+      print("REPO ERR :: " + err.toString());
       rethrow;
     }
   }
