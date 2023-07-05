@@ -24,35 +24,38 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _bioController = TextEditingController();
 
-  @override
   void initState() {
-    super.initState();
     _ui = Provider.of<GlobalUIViewModel>(context, listen: false);
     _authViewModel = Provider.of<AuthViewModel>(context, listen: false);
     _passwordController.text = _authViewModel.loggedInUser!.password!;
     _nameController.text = _authViewModel.loggedInUser!.name!;
     _emailController.text = _authViewModel.loggedInUser!.email!;
     _bioController.text = _authViewModel.loggedInUser!.about!;
+    super.initState();
   }
 
   void changePassword(String password, String id) async {
     try {
       if (password == "") {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Please Fill Password")));
+          SnackBar(content: Text("Please Fill Password")),
+        );
       } else {
         await _authViewModel.changePassword(password, id);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Password Changed Successfully")),
+        );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Password too short, please enter a longer password")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Password too short, please enter a longer password")),
+      );
     }
   }
 
   Future<void> _selectImage() async {
     final ImagePicker _picker = ImagePicker();
-    final XFile? image =
-    await _picker.pickImage(source: ImageSource.gallery);
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
       setState(() {
@@ -118,38 +121,92 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: 'Name'),
+              SizedBox(
+                height: 20,
               ),
-              SizedBox(height: 10),
-              TextFormField(
-                controller: _emailController,
-                decoration: InputDecoration(labelText: 'Email'),
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                controller: _passwordController,
-                decoration: InputDecoration(labelText: 'Password'),
-              ),
-              SizedBox(height: 10),
               TextFormField(
                 controller: _bioController,
-                decoration: InputDecoration(labelText: 'Bio'),
+                decoration: InputDecoration(
+                  hintText: "Type Bio...",
+                  filled: true,
+                  fillColor: Colors.transparent,
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      width: 3,
+                      color: Colors.black26,
+                    ),
+                  ),
+                ),
               ),
-
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  _updateProfile();
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      Navigator.of(context).pushNamed("/userselect");
-                    };
-                },
-                child: Text('Update Profile'),
-
+              SizedBox(
+                height: 50,
+              ),
+              TextFormField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  filled: true,
+                  fillColor: Colors.transparent,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  filled: true,
+                  fillColor: Colors.transparent,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  filled: true,
+                  fillColor: Colors.transparent,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Consumer<AuthViewModel>(
+                builder: (context, _authViewModel, child) => SizedBox(
+                  height: 70,
+                  width: 200,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      changePassword(
+                          _passwordController.text, _authViewModel.loggedInUser!.id!);
+                      _updateProfile();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text(
+                      "Update Profile",
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

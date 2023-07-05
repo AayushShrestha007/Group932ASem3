@@ -3,15 +3,6 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-<<<<<<< HEAD
-	<string>49681467263-6te338as2nh60qolihnnglmm0m180c23.apps.googleusercontent.com</string>
-	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.49681467263-6te338as2nh60qolihnnglmm0m180c23</string>
-	<key>API_KEY</key>
-	<string>AIzaSyBpazIRzVgjt2xM5caE5CNfhM4Pi32e6cA</string>
-	<key>GCM_SENDER_ID</key>
-	<string>49681467263</string>
-=======
 	<string>565691892767-ngtrbbs2d455ids0hmletsl7pn1d5rbb.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
 	<string>com.googleusercontent.apps.565691892767-ngtrbbs2d455ids0hmletsl7pn1d5rbb</string>
@@ -19,21 +10,14 @@
 	<string>AIzaSyCUnf4Xy87Cy5QMhV_XFIJ6iuHt3UmM3Zs</string>
 	<key>GCM_SENDER_ID</key>
 	<string>565691892767</string>
->>>>>>> origin/Ayush
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.example.ezText</string>
 	<key>PROJECT_ID</key>
-<<<<<<< HEAD
-	<string>group932-a</string>
-	<key>STORAGE_BUCKET</key>
-	<string>group932-a.appspot.com</string>
-=======
 	<string>ez-text-1a32c</string>
 	<key>STORAGE_BUCKET</key>
 	<string>ez-text-1a32c.appspot.com</string>
->>>>>>> origin/Ayush
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -45,10 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-<<<<<<< HEAD
-	<string>1:49681467263:ios:da4b5b41af396d15d0fc4a</string>
-=======
 	<string>1:565691892767:ios:693f3e90a8d6413f0dc12a</string>
->>>>>>> origin/Ayush
 </dict>
 </plist>
