@@ -44,40 +44,40 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDPlIJa233mqq95dNq2a3ZQ-5rlEB8HUYo',
-    appId: '1:798657438100:web:7e39048781aebc8cb02f81',
-    messagingSenderId: '798657438100',
-    projectId: 'eztext-4cc00',
-    authDomain: 'eztext-4cc00.firebaseapp.com',
-    storageBucket: 'eztext-4cc00.appspot.com',
-    measurementId: 'G-J436XEPNP0',
+    apiKey: 'AIzaSyBIy4tUSsTfkJNKC5V3zedxHFSu4tBAAjM',
+    appId: '1:861502621099:web:59d62da86ec0f30f98beee',
+    messagingSenderId: '861502621099',
+    projectId: 'a-24315',
+    authDomain: 'a-24315.firebaseapp.com',
+    storageBucket: 'a-24315.appspot.com',
+    measurementId: 'G-S6FVGXQ8TG',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDPlIJa233mqq95dNq2a3ZQ-5rlEB8HUYo',
-    appId: '1:798657438100:android:6d958f567f0e0f25b02f81',
-    messagingSenderId: '798657438100',
-    projectId: 'eztext-4cc00',
-    storageBucket: 'eztext-4cc00.appspot.com',
+    apiKey: 'AIzaSyCTvtCqd-QPYLntY6euMJbW6ZOjCRIsHis',
+    appId: '1:861502621099:android:b91b1e7e2346a28c98beee',
+    messagingSenderId: '861502621099',
+    projectId: 'a-24315',
+    storageBucket: 'a-24315.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAk2qqOqwzPjp9AOIo6o5nUUDqZhp1gDgw',
-    appId: '1:798657438100:ios:3067e6fddf137d25b02f81',
-    messagingSenderId: '798657438100',
-    projectId: 'eztext-4cc00',
-    storageBucket: 'eztext-4cc00.appspot.com',
-    iosClientId: '798657438100-umfvp9ff6dmogq4rbpj62nlh9t1h6cch.apps.googleusercontent.com',
+    apiKey: 'AIzaSyA7XM2aJwmq2p9pHZZqd2TgA7TI-DAhYSQ',
+    appId: '1:861502621099:ios:a6f19756c8f6375b98beee',
+    messagingSenderId: '861502621099',
+    projectId: 'a-24315',
+    storageBucket: 'a-24315.appspot.com',
+    iosClientId: '861502621099-50fuujholv15vc4iqnq87q91e1drnck1.apps.googleusercontent.com',
     iosBundleId: 'com.example.ezText',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyAk2qqOqwzPjp9AOIo6o5nUUDqZhp1gDgw',
-    appId: '1:798657438100:ios:3067e6fddf137d25b02f81',
-    messagingSenderId: '798657438100',
-    projectId: 'eztext-4cc00',
-    storageBucket: 'eztext-4cc00.appspot.com',
-    iosClientId: '798657438100-umfvp9ff6dmogq4rbpj62nlh9t1h6cch.apps.googleusercontent.com',
+    apiKey: 'AIzaSyA7XM2aJwmq2p9pHZZqd2TgA7TI-DAhYSQ',
+    appId: '1:861502621099:ios:a6f19756c8f6375b98beee',
+    messagingSenderId: '861502621099',
+    projectId: 'a-24315',
+    storageBucket: 'a-24315.appspot.com',
+    iosClientId: '861502621099-50fuujholv15vc4iqnq87q91e1drnck1.apps.googleusercontent.com',
     iosBundleId: 'com.example.ezText',
   );
 }

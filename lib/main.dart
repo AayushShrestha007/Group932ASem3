@@ -2,6 +2,7 @@
 import 'package:ez_text/screens/account/edit_profile_screen.dart';
 import 'package:ez_text/screens/auth/login_screen.dart';
 import 'package:ez_text/screens/auth/register_screen.dart';
+import 'package:ez_text/screens/auth/verify_screen.dart';
 import 'package:ez_text/screens/chat/chat_screen.dart';
 import 'package:ez_text/screens/home/home_screen.dart';
 import 'package:ez_text/screens/user_list/user_selection.dart';
@@ -55,6 +56,7 @@ class MyApp extends StatelessWidget {
         "/home": (BuildContext context) => HomeScreen(),
         "/editprofile": (BuildContext context) => EditProfile(),
         "/chatscreen": (BuildContext context) => ChatScreen(),
+        "/verify": (BuildContext context)=> Verify(),
       },
     )
     );

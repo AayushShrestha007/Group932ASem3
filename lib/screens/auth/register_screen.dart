@@ -1,3 +1,4 @@
+import 'package:ez_text/screens/auth/verify_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           )
       ).then((value) {
 
-        Navigator.of(context).pushReplacementNamed("/login");
+        Navigator.of(context).pushReplacementNamed("/verify");
       })
           .catchError((e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -179,6 +180,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ElevatedButton(
                     onPressed: () {
                       register();
+
                     },
                     style: ElevatedButton.styleFrom(
                       primary: Color(0xFF2086B1),
