@@ -1,19 +1,36 @@
+import 'package:ez_text/repositories/message_repositories.dart';
+import 'package:ez_text/view_model/message_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../models/message_model.dart';
 import '../models/user_model.dart';
-
-
+import '../view_model/auth_viewmodel.dart';
 
 class ChatUserCard extends StatefulWidget {
   final UserModel user;
-  const ChatUserCard({Key? key, required this.user}) : super(key: key);
+  final int indexes;
+  // final MessageModel message;
+  const ChatUserCard({Key? key, required this.user, required this.indexes})
+      : super(key: key);
 
   @override
   State<ChatUserCard> createState() => _ChatUserCardState();
 }
 
 class _ChatUserCardState extends State<ChatUserCard> {
+  late AuthViewModel _authViewModel;
+  late MessageViewModel _messageViewModel;
+
+  void initState() {
+    _authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+
+    // _messageViewModel.showLastFromMessage(_authViewModel.loggedInUser!.id,widget.user.id);
+
+    super.initState();
+  }
+
   bool isFavorite = false;
 
   void toggleFavorite() {
@@ -28,57 +45,71 @@ class _ChatUserCardState extends State<ChatUserCard> {
       elevation: 0, // No shadow for the card
       color: Colors.transparent, // Make the card background transparent
       child: InkWell(
-        onTap: ( ) {
+        onTap: () {
           // Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen()));
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Column(
             children: [
-              ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-                leading: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Icon(
-                    CupertinoIcons.person,
-                    color: Colors.black,
-                  ),
-                ),
-                title: Text(
-                  widget.user?.name ?? '',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+              Consumer<MessageViewModel>(
+                  builder: (context, _messageViewModel, child) {
+                    // MessageRepository().showLastFromMessage(_authViewModel!.loggedInUser!.id,
+                    //     _authViewModel!.friendsList[widget.indexes].id);
+                return ListTile(
+                  onTap: () {
+                    _messageViewModel.showMessages(
+                        _authViewModel!.loggedInUser!.id,
+                        _authViewModel!.friendsList[widget.indexes].id);
 
-                subtitle: Text(
-                  "The Last Message",
-                  style: TextStyle(
-                    color: Colors.white,
+                    Navigator.pushNamed(context, '/chatscreen',
+                        arguments:
+                            (_authViewModel.friendsList[widget.indexes]));
+                  },
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Icon(
+                      CupertinoIcons.person,
+                      color: Colors.black,
+                    ),
                   ),
-                  maxLines: 1,
-                ),
-                trailing: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    GestureDetector(
-                      onTap: toggleFavorite,
-                      child: Icon(
-                        isFavorite ? Icons.star : Icons.star_border,
-                        color: isFavorite ? Colors.yellow : Colors.white,
-                      ),
+                  title: Text(
+                    widget.user?.name ?? '',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
-                    SizedBox(height: 4.0),
-                    Text(
-                      "12:00 PM",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
+                  ),
+                  subtitle: Text(
+                    // _messageViewModel.lastFromMessage,
+                    _authViewModel.lastMessage[_authViewModel.friendsList[widget.indexes].id].toString(),
+                    style: TextStyle(
+                      color: Colors.white,
                     ),
-                  ],
-                ),
-              ),
+                    maxLines: 1,
+                  ),
+                  trailing: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        onTap: toggleFavorite,
+                        child: Icon(
+                          isFavorite ? Icons.star : Icons.star_border,
+                          color: isFavorite ? Colors.yellow : Colors.white,
+                        ),
+                      ),
+                      SizedBox(height: 4.0),
+                      Text(
+                        "12:00 PM",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
               Divider(
                 color: Colors.white,
                 thickness: 1.0,
