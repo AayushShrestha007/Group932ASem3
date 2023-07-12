@@ -56,15 +56,6 @@ class _VerifyState extends State<Verify> {
               width: double.infinity,
               height: MediaQuery.of(context).size.height,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  colors: [
-                    Colors.deepOrangeAccent.shade100,
-                    Colors.orange.shade300,
-                    Colors.orange.shade200,
-                    Colors.orange.shade100,
-                  ],
-                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -195,9 +186,9 @@ class _VerifyState extends State<Verify> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "\t \t\t\tUNISTAY ACCOUNT",
+                                "\t \t\t\tEZtext",
                                 style: TextStyle(
-                                  color: Colors.orangeAccent,
+                                  color: Colors.blue,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 24,
                                 ),
@@ -210,11 +201,11 @@ class _VerifyState extends State<Verify> {
                             //
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.orange.shade300,
+                                primary: Colors.blue,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
                                   side:
-                                  BorderSide(color: Colors.orange.shade300),
+                                  BorderSide(color: Colors.blue),
                                 ),
                                 padding: EdgeInsets.symmetric(vertical: 20),
                               ),

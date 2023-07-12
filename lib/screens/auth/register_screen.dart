@@ -38,14 +38,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             password: _passwordController.text,
 
           )
-      ).then((value) {
+      );
 
-        Navigator.of(context).pushReplacementNamed("/verify");
-      })
-          .catchError((e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(e.message.toString())));
-      });
+      Navigator.of(context).pushReplacementNamed("/verify");
     } catch (err) {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(err.toString())));
