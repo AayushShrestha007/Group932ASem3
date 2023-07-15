@@ -15,6 +15,7 @@ class MessageModel {
   String? toId;
   String? type;
 
+
   MessageModel({
     this.fromId,
     this.msg,
@@ -22,6 +23,7 @@ class MessageModel {
     this.sent,
     this.toId,
     this.type,
+
   });
 
   factory MessageModel.fromJson(Map<String, dynamic> json) => MessageModel(
@@ -30,7 +32,8 @@ class MessageModel {
     read: json["read"].toString(),
     sent: json["sent"].toString(),
     toId: json["toID"].toString(),
-    type: json["type"].toString()
+    type: json["type"].toString(),
+
         // == Type.image.name ? Type.image: Type.text,
   );
 
@@ -41,6 +44,7 @@ class MessageModel {
     "sent": sent,
     "toID": toId,
     "type": type,
+
   };
 
   factory MessageModel.fromFirebaseSnapshot(
@@ -52,7 +56,8 @@ class MessageModel {
       read: json["read"].toString(),
       sent: json["sent"].toString(),
       toId: json["toID"].toString(),
-      type: json["type"].toString()
+      type: json["type"].toString(),
+
           // == Type.image.name ? Type.image: Type.text,
     );
   }

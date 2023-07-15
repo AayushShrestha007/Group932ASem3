@@ -1,3 +1,4 @@
+import 'package:ez_text/view_model/message_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   late GlobalUIViewModel _ui;
   late AuthViewModel _authViewModel;
+  late MessageViewModel _messageViewModel;
 
 
   void login() async{
@@ -58,7 +60,10 @@ class _LoginScreenState extends State<LoginScreen> {
     try{
       await _authViewModel.login(_emailController.text, _passwordController.text)
           .then((value){
-        Navigator.of(context).pushNamed('/userselect');
+
+        Navigator.of(context).pushNamed('/homescreen');
+
+
       }).catchError((e){
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
       });
@@ -72,6 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState(){
     _ui= Provider.of<GlobalUIViewModel>(context, listen: false);
     _authViewModel= Provider.of<AuthViewModel>(context, listen: false);
+    _messageViewModel= Provider.of<MessageViewModel>(context, listen: false);
     super.initState();
   }
 

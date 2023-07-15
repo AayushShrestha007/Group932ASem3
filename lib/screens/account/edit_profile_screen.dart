@@ -16,6 +16,7 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   File? _selectedImage;
+  late bool read;
 
   late GlobalUIViewModel _ui;
   late AuthViewModel _authViewModel;
@@ -34,6 +35,8 @@ class _EditProfileState extends State<EditProfile> {
     super.initState();
   }
 
+
+
   void changePassword(String password, String id) async {
     try {
       if (password == "") {
@@ -42,9 +45,7 @@ class _EditProfileState extends State<EditProfile> {
         );
       } else {
         await _authViewModel.changePassword(password, id);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Password Changed Successfully")),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Password Changed Successfully")));
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

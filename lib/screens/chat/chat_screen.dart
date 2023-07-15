@@ -70,43 +70,43 @@ class _ChatScreenState extends State<ChatScreen> {
           child: Column(
             children: [
               Container(
-              color: Color(0xff4e91fb),
-          height: MediaQuery.of(context).size.height-170 ,
-          width: double.infinity,
+                color: Color(0xff4e91fb),
+                height: MediaQuery.of(context).size.height-170 ,
+                width: double.infinity,
               ),
               // Expanded(
-                // child: StreamBuilder<QuerySnapshot>(
-                //   stream: APIs.getAllMessages(),
-                //   builder: (context, snapshot) {
-                //     switch (snapshot.connectionState) {
-                //       case ConnectionState.waiting:
-                //       case ConnectionState.none:
-                //         return const Center(child: CircularProgressIndicator());
-                //       case ConnectionState.active:
-                //       case ConnectionState.done:
-                //       // final data=snapshot.data?.docs;
-                //       // log('Data: ${jsonEncode(data![0].data())}');
-                //         final list = [];
-                //
-                //         if (list.isNotEmpty) {
-                //           return ListView.builder(
-                //             itemCount: list.length,
-                //             physics: BouncingScrollPhysics(),
-                //             itemBuilder: (context, index) {
-                //               return Text("Message: ${list[index]}");
-                //             },
-                //           );
-                //         } else {
-                //           return Center(
-                //             child: Text(
-                //               "Say Hiii 👋",
-                //               style: TextStyle(fontSize: 30),
-                //             ),
-                //           );
-                //         }
-                //     }
-                //   },
-                // ),
+              // child: StreamBuilder<QuerySnapshot>(
+              //   stream: APIs.getAllMessages(),
+              //   builder: (context, snapshot) {
+              //     switch (snapshot.connectionState) {
+              //       case ConnectionState.waiting:
+              //       case ConnectionState.none:
+              //         return const Center(child: CircularProgressIndicator());
+              //       case ConnectionState.active:
+              //       case ConnectionState.done:
+              //       // final data=snapshot.data?.docs;
+              //       // log('Data: ${jsonEncode(data![0].data())}');
+              //         final list = [];
+              //
+              //         if (list.isNotEmpty) {
+              //           return ListView.builder(
+              //             itemCount: list.length,
+              //             physics: BouncingScrollPhysics(),
+              //             itemBuilder: (context, index) {
+              //               return Text("Message: ${list[index]}");
+              //             },
+              //           );
+              //         } else {
+              //           return Center(
+              //             child: Text(
+              //               "Say Hiii 👋",
+              //               style: TextStyle(fontSize: 30),
+              //             ),
+              //           );
+              //         }
+              //     }
+              //   },
+              // ),
               // ),
               _chatInput(),
             ],
@@ -226,21 +226,21 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         Consumer<AuthViewModel>(
           builder: (context, _authViewModel, child)=>
-            MaterialButton(
-            onPressed: () {
-              sendMessage(_messageController.text, _authViewModel!.loggedInUser!.id!, receiverUserModel!.id! );
+              MaterialButton(
+                onPressed: () {
+                  sendMessage(_messageController.text, _authViewModel!.loggedInUser!.id!, receiverUserModel!.id! );
 
-            },
-            minWidth: 0,
-            padding: const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 5),
-            shape: const CircleBorder(),
-            color: Colors.blueAccent,
-            child: const Icon(
-              Icons.arrow_forward_outlined,
-              color: Colors.white,
-              size: 28,
-            ),
-          ),
+                },
+                minWidth: 0,
+                padding: const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 5),
+                shape: const CircleBorder(),
+                color: Colors.blueAccent,
+                child: const Icon(
+                  Icons.arrow_forward_outlined,
+                  color: Colors.white,
+                  size: 28,
+                ),
+              ),
         ),
       ],
     );
