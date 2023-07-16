@@ -107,6 +107,55 @@ class AuthRepository {
     }
   }
 
+  Future<UserModel?> addFavorite(UserModel model, String id, String email) async {
+    try {
+      final response = await userRef.where("email", isEqualTo: email).get();
+
+      userRef.doc(id).update({
+        "myFavorite": FieldValue.arrayUnion([response.docs.first.id]),
+      });
+
+      model.myFavorite?.add(response.docs.first.id);
+
+      return model;
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  Future<UserModel?> removeFavorite(UserModel model, String id, String email) async {
+    try {
+      final response = await userRef.where("email", isEqualTo: email).get();
+
+      userRef.doc(id).update({
+        "myFavorite": FieldValue.arrayRemove([response.docs.first.id]),
+      });
+
+      model.myFavorite?.remove(response.docs.first.id);
+      print(model.myFavorite);
+
+      return model;
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  Future<void> removeFriend(String loggedIn, String friendId) async {
+    try {
+      await userRef.doc(loggedIn).update({
+        "myFriends": FieldValue.arrayRemove([friendId]),
+      });
+      // final response = await userRef.doc(loggedIn).get();
+      //
+      // if (response!=null) {
+      //   String userId = response.docs.first.id;
+      //
+      // }
+    } catch (err) {
+      rethrow;
+    }
+  }
+
   Future<bool> changePassword(String password, String id) async {
     try {
       await FirebaseService.firebaseAuth.currentUser!

@@ -17,6 +17,9 @@ class AuthViewModel with ChangeNotifier {
   List<UserModel> _friendsList = [];
   List<UserModel> get friendsList => _friendsList;
 
+  List<UserModel> _favoriteList = [];
+  List<UserModel> get favoriteList => _favoriteList;
+
   Future<void> register(UserModel user) async {
     try {
       var response = await AuthRepository().register(user);
@@ -67,6 +70,62 @@ class AuthViewModel with ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Future<void> addFavorite(UserModel model, String id, String email) async {
+    try {
+      _loggedInUser = await AuthRepository().addFavorite(model, id, email);
+
+      await getFavoriteDetail(loggedInUser!.myFavorite!);
+      notifyListeners();
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  Future<void> removeFavorite(UserModel model, String id, String email) async {
+    try {
+      _loggedInUser = await AuthRepository().removeFavorite(model, id, email);
+
+      await getFavoriteDetail(_loggedInUser!.myFavorite!);
+      notifyListeners();
+
+
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  Future<void> getFavoriteDetail(List<String> ids) async {
+    print(ids);
+    _favoriteList = [];
+    for(int i=0; i< ids.length;i++){
+      var a= await AuthRepository().getUserDetailWithId(ids[i]);
+      if(a!=null){
+        _favoriteList?.add(a);
+        print(_favoriteList);
+      }
+
+    }
+    notifyListeners();
+  }
+
+  Future<void> removeFriend(String friendId) async {
+    try {
+      await AuthRepository()
+          .removeFriend(loggedInUser!.id.toString(), friendId);
+      _loggedInUser = await AuthRepository().getUserDetail(_user!.uid);
+      notifyListeners();
+      await getFriendsDetail(loggedInUser!.myFriends!);
+      notifyListeners();
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  Map<String, String> _lastMessage = {};
+  Map<String, String> get  lastMessage => _lastMessage;
+
+
 
   Future<void> changePassword(String password, String id) async {
     try {
