@@ -40,6 +40,24 @@ class MessageRepository{
     }
   }
 
+  Future<void> deleteConversation(String fromId, String toId) async {
+    try {
+      final query = await messageRef
+          .where('fromId', isEqualTo: fromId)
+          .where('toId', isEqualTo: toId)
+          .get();
+
+      final batch = FirebaseService.db.batch();
+      for (final doc in query.docs) {
+        batch.delete(doc.reference);
+      }
+
+      await batch.commit();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
 
 
   Stream<QuerySnapshot<Map<String, dynamic>>> showMessages(String? fromId, String? toId){

@@ -1,91 +1,156 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../models/message_model.dart';
 import '../models/user_model.dart';
-
-
+import '../repositories/message_repositories.dart';
+import '../screens/chat/chat_screen.dart';
 
 class ChatUserCard extends StatefulWidget {
-  final UserModel user;
-  const ChatUserCard({Key? key, required this.user}) : super(key: key);
+  final UserModel? user;
+  final String fromId;
+  final String toId;
+
+  const ChatUserCard({Key? key, required this.user,  required this.fromId,
+    required this.toId,}) : super(key: key);
 
   @override
-  State<ChatUserCard> createState() => _ChatUserCardState();
+  _ChatUserCardState createState() => _ChatUserCardState();
 }
 
 class _ChatUserCardState extends State<ChatUserCard> {
-  bool isFavorite = false;
+  bool _showButtons = false;
+  bool _isFavorite = false;
 
-  void toggleFavorite() {
+  void _toggleFavorite() {
     setState(() {
-      isFavorite = !isFavorite;
+      _isFavorite = !_isFavorite;
     });
   }
 
+  void _showDeleteConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Delete Messages"),
+        content: Text("Are you sure you want to delete the messages?"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              // Close the dialog
+              Navigator.pop(context);
+            },
+            child: Text("No"),
+          ),
+          TextButton(
+            onPressed: () async{
+              await MessageRepository().deleteConversation(
+                  widget.fromId, widget.toId
+
+              );
+              Navigator.pop(context);
+
+
+            },
+            child: Text("Yes"),
+          ),
+        ],
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0, // No shadow for the card
-      color: Colors.transparent, // Make the card background transparent
-      child: InkWell(
-        onTap: ( ) {
-          // Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen()));
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Column(
-            children: [
-              ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-                leading: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Icon(
-                    CupertinoIcons.person,
-                    color: Colors.black,
+    return GestureDetector(
+      onLongPress: () {
+        setState(() {
+          _showButtons = true;
+        });
+      },
+      child: Card(
+        elevation: 0,
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            // Navigate to chat screen
+            Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen()));
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Column(
+              children: [
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Icon(
+                      CupertinoIcons.person,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-                title: Text(
-                  widget.user?.name ?? '',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                  title: Text(
+                    widget.user?.name ?? '',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
+                  subtitle: Text(
+                    "The Last Message",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                    maxLines: 1,
+                  ),
+                  trailing: _showButtons
+                      ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          // Handle delete button press
 
-                subtitle: Text(
-                  "The Last Message",
-                  style: TextStyle(
-                    color: Colors.white,
+                          _showDeleteConfirmationDialog(context);
+                        },
+                        icon: Icon(Icons.delete, color: Colors.white),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          // Handle hide button press
+                        },
+                        icon: Icon(Icons.hide_source, color: Colors.white),
+                      ),
+                    ],
+                  )
+                      : Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        onTap: _toggleFavorite,
+                        child: Icon(
+                          _isFavorite ? Icons.star : Icons.star_border,
+                          color: _isFavorite ? Colors.yellow : Colors.white,
+                        ),
+                      ),
+                      SizedBox(height: 4.0),
+                      Text(
+                        "12:00 PM",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
                   ),
-                  maxLines: 1,
                 ),
-                trailing: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    GestureDetector(
-                      onTap: toggleFavorite,
-                      child: Icon(
-                        isFavorite ? Icons.star : Icons.star_border,
-                        color: isFavorite ? Colors.yellow : Colors.white,
-                      ),
-                    ),
-                    SizedBox(height: 4.0),
-                    Text(
-                      "12:00 PM",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+                Divider(
+                  color: Colors.white,
+                  thickness: 1.0,
+                  indent: 16.0,
+                  endIndent: 16.0,
                 ),
-              ),
-              Divider(
-                color: Colors.white,
-                thickness: 1.0,
-                indent: 16.0,
-                endIndent: 16.0,
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

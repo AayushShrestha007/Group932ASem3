@@ -129,7 +129,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   itemCount: list.length,
                   physics: BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
-                    return ChatUserCard(user: list[index]);
+
+                    return ChatUserCard(user: list[index], fromId: '', toId: '',);
                   },
                 );
               }else{
