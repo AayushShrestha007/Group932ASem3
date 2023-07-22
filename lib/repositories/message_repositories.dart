@@ -40,11 +40,11 @@ class MessageRepository{
     }
   }
 
-  Future<void> deleteConversation(String fromId, String toId) async {
+  Future<void> deleteConversation(String Idfrom, String Idto) async {
     try {
       final query = await messageRef
-          .where('fromId', isEqualTo: fromId)
-          .where('toId', isEqualTo: toId)
+          .where('fromId', isEqualTo: Idfrom)
+          .where('toId', isEqualTo: Idto)
           .get();
 
       final batch = FirebaseService.db.batch();
@@ -62,7 +62,10 @@ class MessageRepository{
 
   Stream<QuerySnapshot<Map<String, dynamic>>> showMessages(String? fromId, String? toId){
 
-    return FirebaseService.db.collection("messages").where("toID", whereIn:[toId, fromId]).snapshots();
+    return FirebaseService
+        .db.collection("messages")
+        .where("toID", whereIn:[toId, fromId])
+        .snapshots();
 
 
   }

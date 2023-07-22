@@ -15,11 +15,12 @@ class ChatUserCard extends StatefulWidget {
   final String toId;
 
   final int indexes;
+  final MessageModel msg;
 
 
 
   ChatUserCard({Key? key, required this.user,  required this.indexes, required this.fromId,
-    required this.toId,}) : super(key: key);
+    required this.toId, required this.msg}) : super(key: key);
 
 
 
@@ -81,14 +82,13 @@ class _ChatUserCardState extends State<ChatUserCard> {
             child: Text("No"),
           ),
           TextButton(
-            onPressed: () async{
-              await MessageRepository().deleteConversation(
-                  widget.fromId, widget.toId
-
+            onPressed: () async {
+              await _messageViewModel.deleteMessage(
+                widget.msg.msg!,
+                widget.fromId,
+                widget.toId,
               );
               Navigator.pop(context);
-
-
             },
             child: Text("Yes"),
           ),
@@ -96,6 +96,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
       ),
     );
   }
+
 
 
   @override
