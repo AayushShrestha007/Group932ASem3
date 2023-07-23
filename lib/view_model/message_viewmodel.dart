@@ -24,11 +24,13 @@ class MessageViewModel with ChangeNotifier{
     }
   }
 
-  Future<void> deleteMessage(String msg, String fromId, String toId) async{
+  Future<void> deleteMessage(String? fromId, String? toId) async{
     try{
-      await MessageRepository().deleteConversation(fromId, toId);
+      await MessageRepository().deleteMessage(fromId, toId);
+      _messages = await MessageRepository().showMessages(fromId, toId);
+      notifyListeners();
 
-    } catch(e){
+    }catch(err){
       rethrow;
     }
   }

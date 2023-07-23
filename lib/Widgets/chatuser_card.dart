@@ -1,46 +1,46 @@
+import 'package:ez_text/repositories/message_repositories.dart';
+import 'package:ez_text/view_model/message_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/message_model.dart';
 import '../models/user_model.dart';
-import '../repositories/message_repositories.dart';
-import '../screens/chat/chat_screen.dart';
 import '../view_model/auth_viewmodel.dart';
-import '../view_model/message_viewmodel.dart';
 
 class ChatUserCard extends StatefulWidget {
-  final UserModel? user;
-  final String fromId;
-  final String toId;
-
+  final UserModel user;
   final int indexes;
-  final MessageModel msg;
-
-
-
-  ChatUserCard({Key? key, required this.user,  required this.indexes, required this.fromId,
-    required this.toId, required this.msg}) : super(key: key);
-
-
+  // final MessageModel message;
+  const ChatUserCard({Key? key, required this.user, required this.indexes})
+      : super(key: key);
 
   @override
-  _ChatUserCardState createState() => _ChatUserCardState();
+  State<ChatUserCard> createState() => _ChatUserCardState();
 }
 
 class _ChatUserCardState extends State<ChatUserCard> {
-
   late AuthViewModel _authViewModel;
   late MessageViewModel _messageViewModel;
 
   void initState() {
     _authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+    _messageViewModel = Provider.of<MessageViewModel>(context, listen: false);
     super.initState();
   }
 
-
+  bool isFavorite= false;
   bool _showButtons = false;
-  bool _isFavorite = false;
+
+
+  Future<void> removeFriend(String friendId) async {
+    await _authViewModel.removeFriend(friendId);
+  }
+
+  Future<void> deleteMessage(String fromId, String toId) async {
+    await _messageViewModel.deleteMessage(fromId, toId);
+  }
+
 
   void toggleFavorite(String email) {
     setState(() {
@@ -67,6 +67,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
     });
   }
 
+
   void _showDeleteConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -81,16 +82,21 @@ class _ChatUserCardState extends State<ChatUserCard> {
             },
             child: Text("No"),
           ),
-          TextButton(
-            onPressed: () async {
-              await _messageViewModel.deleteMessage(
-                widget.msg.msg!,
-                widget.fromId,
-                widget.toId,
-              );
-              Navigator.pop(context);
-            },
-            child: Text("Yes"),
+          Consumer<AuthViewModel>(
+            builder: (context, _authViewModel, child)=> TextButton(
+              onPressed: () async{
+                final friend = _authViewModel.friendsList[widget.indexes];
+                deleteMessage(_authViewModel!.loggedInUser!.id!, friend.id.toString());
+                if ( friend!= null) {
+                  removeFriend(friend.id.toString()); // Use 'id' instead of friend[id]
+                }
+
+
+                Navigator.pop(context);
+
+              },
+              child: Text("Yes"),
+            ),
           ),
         ],
       ),
@@ -98,21 +104,19 @@ class _ChatUserCardState extends State<ChatUserCard> {
   }
 
 
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPress: () {
+      onLongPress: (){
         setState(() {
-          _showButtons = true;
+          _showButtons= true;
         });
       },
       child: Card(
-        elevation: 0,
-        color: Colors.transparent,
+        elevation: 0, // No shadow for the card
+        color: Colors.transparent, // Make the card background transparent
         child: InkWell(
           onTap: () {
-            // Navigate to chat screen
             // Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen()));
           },
           child: Padding(
@@ -120,85 +124,84 @@ class _ChatUserCardState extends State<ChatUserCard> {
             child: Column(
               children: [
                 Consumer<MessageViewModel>(
-                  builder: (context, _messageViewModel, child) {
-                    return ListTile(
-                      onTap: () {
-                        _messageViewModel.showMessages(_authViewModel!
-                            .loggedInUser!.id,
-                            _authViewModel.friendsList[widget.indexes].id);
-                        Navigator.pushNamed(context, '/chatscreen',
-                            arguments: (_authViewModel.friendsList[widget
-                                .indexes]));
-                      },
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          CupertinoIcons.person,
-                          color: Colors.black,
-                        ),
-                      ),
-                      title: Text(
-                        widget.user?.name ?? '',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      subtitle: Text(
-                        // _messageViewModel.lastFromMessage,
-                        // _authViewModel.lastMessage[_authViewModel.friendsList[widget.indexes].id].toString(),
-                        "",
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                        maxLines: 1,
-                      ),
-                      trailing: _showButtons
-                          ? Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              // Handle delete button press
+                    builder: (context, _messageViewModel, child) {
+                      // MessageRepository().showLastFromMessage(_authViewModel!.loggedInUser!.id,
+                      //     _authViewModel!.friendsList[widget.indexes].id);
+                      return ListTile(
+                        onTap: () {
+                          _messageViewModel.showMessages(
+                              _authViewModel!.loggedInUser!.id,
+                              _authViewModel!.friendsList[widget.indexes].id);
 
-                              _showDeleteConfirmationDialog(context);
-                            },
-                            icon: Icon(Icons.delete, color: Colors.white),
+                          Navigator.pushNamed(context, '/chatscreen',
+                              arguments:
+                              (_authViewModel.friendsList[widget.indexes]));
+                        },
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: Icon(
+                            CupertinoIcons.person,
+                            color: Colors.black,
                           ),
-                          IconButton(
-                            onPressed: () {
-                              // Handle hide button press
-                            },
-                            icon: Icon(Icons.hide_source, color: Colors.white),
+                        ),
+                        title: Text(
+                          widget.user?.name ?? '',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
                           ),
-                        ],
-                      )
-                          : Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: () =>
-                                toggleFavorite(
-                                    _authViewModel!.friendsList[widget.indexes]!
-                                        .email!),
-                            child: Icon(
-                              _isFavorite ? Icons.star : Icons.star_border,
-                              color: _isFavorite ? Colors.yellow : Colors.white,
+                        ),
+                        subtitle: Text(
+                          // _messageViewModel.lastFromMessage,
+                          // _authViewModel.lastMessage[_authViewModel.friendsList[widget.indexes].id].toString(),
+                          "",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                          maxLines: 1,
+                        ),
+                        trailing:_showButtons
+                            ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                // Handle delete button press
+
+                                _showDeleteConfirmationDialog(context);
+                              },
+                              icon: Icon(Icons.delete, color: Colors.white),
                             ),
-                          ),
-                          SizedBox(height: 4.0),
-                          Text(
-                            "",
-                            style: TextStyle(
-                              color: Colors.white,
+                            IconButton(
+                              onPressed: () {
+                                // Handle hide button press
+                              },
+                              icon: Icon(Icons.hide_source, color: Colors.white),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                ),
+                          ],
+                        )
+                            : Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            GestureDetector(
+                              onTap: ()=> toggleFavorite(_authViewModel!.friendsList[widget.indexes]!.email!),
+                              child: Icon(
+                                isFavorite ? Icons.star : Icons.star_border,
+                                color: isFavorite ? Colors.yellow : Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: 4.0),
+                            Text(
+                              "",
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
                 Divider(
                   color: Colors.white,
                   thickness: 1.0,

@@ -40,23 +40,31 @@ class MessageRepository{
     }
   }
 
-  Future<void> deleteConversation(String Idfrom, String Idto) async {
-    try {
-      final query = await messageRef
-          .where('fromId', isEqualTo: Idfrom)
-          .where('toId', isEqualTo: Idto)
-          .get();
+  Future<void> deleteMessage(String? fromId, String? toId) async {
+    try{
+      final response1 = await messageRef.where("fromID", isEqualTo: fromId).where("toID", isEqualTo: toId).get();
+      final response2 = await messageRef.where("toID", isEqualTo: fromId).where("fromID", isEqualTo: toId).get();
+      print("wassup");
+      print(response1);
+      // if(response1!=null){
+      //   try{messageRef.doc(response1.docs.first.id).delete();} catch(err){
+      //
+      //   }
+      // }
+      // if(response2!=null){
+      //   messageRef.doc(response2.docs.first.id).delete();
+      // }
 
-      final batch = FirebaseService.db.batch();
-      for (final doc in query.docs) {
-        batch.delete(doc.reference);
-      }
+      try{messageRef.doc(response1.docs.first.id).delete();} catch(err){}
+      try{messageRef.doc(response2.docs.first.id).delete();} catch(err){}
 
-      await batch.commit();
-    } catch (e) {
+    }catch(err){
       rethrow;
     }
+
+
   }
+
 
 
 

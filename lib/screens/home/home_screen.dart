@@ -177,8 +177,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     itemBuilder: (context, index) {
                       final fromId = _authViewModel.loggedInUser?.id ?? ''; // Replace with the actual current user ID
                       final toId = _authViewModel.friendsList[index].id ?? '';
-                      return ChatUserCard(user: _authViewModel.favoriteList[index],fromId: fromId,
-                        toId: toId , indexes: index );
+                      return ChatUserCard(user: _authViewModel.favoriteList[index],indexes: index );
 
                     },
                   ),
@@ -206,8 +205,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     itemBuilder: (context, index) {
                       final fromId = _authViewModel.loggedInUser?.id ?? ''; // Replace with the actual current user ID
                       final toId = _authViewModel.friendsList[index].id ?? '';
-                      return ChatUserCard(user: _authViewModel.friendsList[index],fromId: fromId, message:message,
-                          toId: toId, indexes: index  );
+                      return ChatUserCard(user: _authViewModel.friendsList[index], indexes: index  );
 
                     },
                   ),
