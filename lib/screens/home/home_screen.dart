@@ -162,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
               Text("Favorites",
                 style: TextStyle(
-                  color: Colors.white
+                    color: Colors.white
                 ),
 
               ),
