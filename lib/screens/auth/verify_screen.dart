@@ -42,6 +42,7 @@ class _VerifyState extends State<Verify> {
     _viewModel.dispose();
     super.dispose();
   }
+// final formKey
 
   final _formKey = GlobalKey<FormState>();
 
@@ -49,6 +50,7 @@ class _VerifyState extends State<Verify> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Form(
+
         key: _formKey,
         child: Center(
           child: SingleChildScrollView(
@@ -218,6 +220,7 @@ class _VerifyState extends State<Verify> {
                               },
                               child: Text(
                                 "SEND VERIFICATION LINK",
+                                //send verification list
                                 style: TextStyle(fontSize: 20),
                               ),
                             ),
