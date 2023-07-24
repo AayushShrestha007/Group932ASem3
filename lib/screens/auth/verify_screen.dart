@@ -50,7 +50,6 @@ class _VerifyState extends State<Verify> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Form(
-
         key: _formKey,
         child: Center(
           child: SingleChildScrollView(

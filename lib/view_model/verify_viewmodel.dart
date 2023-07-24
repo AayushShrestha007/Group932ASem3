@@ -6,7 +6,7 @@ class VerifyViewModel {
   final FirebaseAuth auth = FirebaseAuth.instance;
   bool isEmailVerified = false;
   Timer? timer;
-
+// future verification
   Future<void> initializeFirebase() async {
     await Firebase.initializeApp();
   }
