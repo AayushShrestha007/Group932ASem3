@@ -39,6 +39,7 @@ class _EditProfileState extends State<EditProfile> {
       }
       else {
         await _authViewModel.changePassword(password, id);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Password Changed Successfully")));
       }
     } catch(e){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Password too short, please enter a longer password")));

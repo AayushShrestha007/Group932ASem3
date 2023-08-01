@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:developer';
 
 
+
+import 'package:ez_text/Widgets/message_card.dart';
 import 'package:ez_text/models/user_model.dart';
 import 'package:ez_text/view_model/auth_viewmodel.dart';
 import 'package:ez_text/view_model/message_viewmodel.dart';
@@ -47,7 +49,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> sendMessage(String msg, String fromId, String toId ) async {
     try{
-      await _messageViewModel.sendMessaege(msg, fromId, toId);
+      await _messageViewModel.sendMessage(msg, fromId, toId);
       _messageController.clear();
     }
 
@@ -61,6 +63,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Color(0xffc6c2c2),
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
@@ -70,6 +73,7 @@ class _ChatScreenState extends State<ChatScreen> {
         body:
         receiverUserModel == null ? CircularProgressIndicator() :
         SingleChildScrollView(
+
           child: Column(
             children: [
               SizedBox(
@@ -88,8 +92,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           print("wassup");
                         final data=snapshot.data?.docs;
 
-
-
+                        print(data?.first.runtimeType);
 
 
                         final list= ["hello","jello","sup"];
@@ -97,10 +100,19 @@ class _ChatScreenState extends State<ChatScreen> {
 
                           if (list.isNotEmpty) {
                             return ListView.builder(
-                              itemCount: list.length,
+                              itemCount: data?.length,
                               physics: BouncingScrollPhysics(),
                               itemBuilder: (context, index) {
-                                return Text("Message: ${list[index]}");
+
+                                return MessageCard(receiverUser: receiverUserModel, message:  MessageModel(
+                                  fromId: data?[index]["fromID"],
+                                  msg: data?[index]["msg"],
+                                  read: data?[index]["read"],
+                                  sent: data?[index]["sent"],
+                                  toId: data?[index]["toID"],
+                                  type: data?[index]["type"],
+
+                                ));
                               },
                             );
                           } else {

@@ -53,10 +53,11 @@ class MyApp extends StatelessWidget {
         "/register": (BuildContext context) => RegisterScreen(),
         "/userselect": (BuildContext context) => UserSelection(),
         "/login": (BuildContext context) => LoginScreen(),
-        "/home": (BuildContext context) => HomeScreen(),
-        "/editprofile": (BuildContext context) => EditProfile(),
         "/chatscreen": (BuildContext context) => ChatScreen(),
         "/verify": (BuildContext context)=> Verify(),
+        "/editprofile": (BuildContext context) => EditProfile(),
+        "/homescreen": (BuildContext context) => HomeScreen(),
+
       },
     )
     );
