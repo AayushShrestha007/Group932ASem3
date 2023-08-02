@@ -20,7 +20,7 @@ void main() async {
     // ),
   );
  
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
               ),
               initialRoute: "/login",
               routes: {
-                "/login": (BuildContext context)=>LoginScreen(),
+                "/login": (BuildContext context)=>const LoginScreen(),
                
                },
             );
@@ -146,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],
         ),
