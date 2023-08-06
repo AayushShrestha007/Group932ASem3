@@ -35,7 +35,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             email: _emailController.text,
             name: _nameController.text,
             password: _passwordController.text,
-            myFavorite: [],
 
           )
       ).then((value) {

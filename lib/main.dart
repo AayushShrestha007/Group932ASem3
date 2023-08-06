@@ -1,10 +1,13 @@
 
-import 'package:ez_text/screens/account/edit_profile_screen.dart';
+
+
+
+import 'package:ez_text/screens/Account/edit_profile_screen.dart';
 import 'package:ez_text/screens/auth/login_screen.dart';
 import 'package:ez_text/screens/auth/register_screen.dart';
 import 'package:ez_text/screens/chat/chat_screen.dart';
-import 'package:ez_text/screens/home/home_screen.dart';
 import 'package:ez_text/screens/user_list/user_selection.dart';
+import 'package:ez_text/services/notification_service.dart';
 import 'package:ez_text/view_model/auth_viewmodel.dart';
 import 'package:ez_text/view_model/global_ui_viewmodel.dart';
 import 'package:ez_text/view_model/message_viewmodel.dart';
@@ -19,9 +22,11 @@ import 'firebase_options.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    name: "EzText",
+    name: "EzText", 
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  NotificationService.initialize();
   runApp(
     MyApp()
   );
@@ -37,7 +42,13 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider (create: (_) => GlobalUIViewModel()),
         ChangeNotifierProvider (create: (_) => AuthViewModel()),
+
+        ChangeNotifierProvider(create: (_) => MessageViewModel()),
+
+
         ChangeNotifierProvider (create: (_) => MessageViewModel()),
+
+
       ],
 
     child: MaterialApp(
@@ -54,11 +65,18 @@ class MyApp extends StatelessWidget {
         "/login": (BuildContext context) => LoginScreen(),
         "/chatscreen": (BuildContext context) => ChatScreen(),
         "/editprofile": (BuildContext context) => EditProfile(),
-        "/homescreen": (BuildContext context) => HomeScreen(),
+        // "/Hidechat": (BuildContext context) => Hidechat(),
+
+
+
+
+
+
 
       },
     )
     );
   }
 }
+
 

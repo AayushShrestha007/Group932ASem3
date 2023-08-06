@@ -44,19 +44,17 @@ class AuthRepository {
     try {
       UserCredential uc = await FirebaseService.firebaseAuth
           .signInWithEmailAndPassword(email: email, password: password);
-      print("wassup234");
-      print(uc);
       return uc;
     } catch (err) {
       rethrow;
     }
   }
 
-  Future<UserModel> getUserDetail(String uid) async {
+  Future<UserModel> getUserDetail(String uid, String? pushToken) async {
     try {
       final response = await userRef.where("uid", isEqualTo: uid).get();
       var user = response.docs.single.data();
-      user.pushToken = "";
+      user.pushToken = pushToken;
       await userRef.doc(user.id).set(user);
       return user;
     } catch (err) {
@@ -85,7 +83,6 @@ class AuthRepository {
     }
   }
 
-
   Future<UserModel?> addUser(UserModel model, String id, String email) async {
     try {
       final response = await userRef.where("email", isEqualTo: email).get();
@@ -102,56 +99,6 @@ class AuthRepository {
     }
   }
 
-  Future<UserModel?> addFavorite(UserModel model, String id, String email) async {
-    try {
-      final response = await userRef.where("email", isEqualTo: email).get();
-
-      userRef.doc(id).update({
-        "myFavorite": FieldValue.arrayUnion([response.docs.first.id]),
-      });
-
-      model.myFavorite?.add(response.docs.first.id);
-
-      return model;
-    } catch (err) {
-      rethrow;
-    }
-  }
-
-  Future<UserModel?> removeFavorite(UserModel model, String id, String email) async {
-    try {
-      final response = await userRef.where("email", isEqualTo: email).get();
-
-      userRef.doc(id).update({
-        "myFriends": FieldValue.arrayRemove([response.docs.first.id]),
-      });
-
-      model.myFriends?.remove(response.docs.first.id);
-      print(model.myFavorite);
-
-      return model;
-    } catch (err) {
-      rethrow;
-    }
-  }
-
-  // Future<UserModel?> removeFriend(UserModel model, String id, String email) async {
-  //   try {
-  //     final response = await userRef.where("email", isEqualTo: email).get();
-  //
-  //     userRef.doc(id).update({
-  //       "myFavorite": FieldValue.arrayRemove([response.docs.first.id]),
-  //     });
-  //
-  //     model.myFavorite?.remove(response.docs.first.id);
-  //     print(model.myFavorite);
-  //
-  //     return model;
-  //   } catch (err) {
-  //     rethrow;
-  //   }
-  // }
-
 
   Future<bool> changePassword(String password, String id) async {
     try {
@@ -164,21 +111,6 @@ class AuthRepository {
       rethrow;
     }
   }
-
-
-  // Future<bool> toggleFavoriteOn(String id) async {
-  //   try {
-  //
-  //     userRef.doc(id).update({
-  //       "favorite": DateTime.now().millisecondsSinceEpoch.toString(),
-  //     });
-  //     return true;
-  //   } catch (err) {
-  //     rethrow;
-  //   }
-  // }
-
-
 
 
 
@@ -196,5 +128,12 @@ class AuthRepository {
     } catch (err) {
       rethrow;
     }
+  }
+
+
+
+  
+  Future<void> updateUser(UserModel user) async {
+    await userRef.doc(user.id).set(user);
   }
 }

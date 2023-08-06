@@ -1,10 +1,12 @@
 import 'dart:developer';
 
 import 'package:ez_text/models/user_model.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import '../../services/notification_service.dart';
 import '../../view_model/auth_viewmodel.dart';
 import '../../view_model/message_viewmodel.dart';
 
@@ -19,12 +21,29 @@ class _UserSelectionState extends State<UserSelection> {
 
     late MessageViewModel _messageViewModel;
     late AuthViewModel _authViewModel;
+    setupFirebaseMessaging(){
+      //foreground notification
+      FirebaseMessaging.onMessage.listen((message) {
+        if (message.notification != null) {
+          // print(message.notification!.)
+          print(message.notification!.body);
+          print(message.notification!.title);
+          NotificationService.displayFcm(notification: message.notification!, buildContext:  context);
+        }
+      });
 
+      //when the app is in background but opened and user taps
+      FirebaseMessaging.onMessageOpenedApp.listen((message) {
+        final routeFromMessage = message.data['route'];
+        print(routeFromMessage);
+      });
+    }
     void initState() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _authViewModel = Provider.of<AuthViewModel>(context, listen: false);
         _messageViewModel= Provider.of<MessageViewModel>(context, listen: false);
       });
+      setupFirebaseMessaging();
       super.initState();
 
     }
@@ -45,9 +64,9 @@ class _UserSelectionState extends State<UserSelection> {
   
  
 
-  Future<void> removeFriend(String friendId) async {
-    await _authViewModel.removeFriend(friendId);
-  }
+  // Future<void> removeFriend(String friendId) async {
+  //   await _authViewModel.removeFriend(friendId);
+  // }
 
   void _onDismissed() {
     // TODO: Implement onDismissed logic if needed
@@ -83,6 +102,7 @@ class _UserSelectionState extends State<UserSelection> {
                     itemBuilder: (context, index) {
                       final friend = _authViewModel.friendsList[index];
                       print("FRIENDS" +friend.toString());
+                      var authViewModel;
                       return Slidable(
                         endActionPane: ActionPane(
                           motion: const StretchMotion(),
@@ -90,7 +110,7 @@ class _UserSelectionState extends State<UserSelection> {
                             SlidableAction(
                               onPressed: (context) {
                                 if (friend != null) {
-                                  removeFriend(friend.id.toString()); // Use 'id' instead of friend[id]
+                                  // removeFriend(friend.id.toString()); // Use 'id' instead of friend[id]
                                 }
                               },
                               backgroundColor: Colors.red,
@@ -115,6 +135,11 @@ class _UserSelectionState extends State<UserSelection> {
                             ),
                             child: ListTile(
 
+
+                              // title: Text(friend.name ?? ''),
+                              // subtitle: Text(friend.email ?? ''),
+
+
                               onTap: (){
                                 _messageViewModel.showMessages( _authViewModel!.loggedInUser!.id,  _authViewModel!.friendsList[index].id );
 
@@ -122,6 +147,17 @@ class _UserSelectionState extends State<UserSelection> {
                                 Navigator.pushNamed(context, '/chatscreen',arguments: ( _authViewModel.friendsList[index]));
 
                               },
+
+                              // title: Text(
+                              //     (authViewModel.friendsList[index]).name.toString(),
+                              //   style: TextStyle(color: Colors.white),
+                              // ),
+                                // subtitle: Text(
+                                //     (authViewModel.friendsList[index]).email.toString(),
+                                //   style: TextStyle(color: Colors.white),
+                                // ),
+
+
                               title: Text(
                                   ( _authViewModel.friendsList[index]).name.toString(),
                                 style: TextStyle(color: Colors.white),
@@ -130,6 +166,7 @@ class _UserSelectionState extends State<UserSelection> {
                                     ( _authViewModel.friendsList[index]).email.toString(),
                                   style: TextStyle(color: Colors.white),
                                 ),
+
                             ),
                           ),
                         ),

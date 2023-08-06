@@ -1,8 +1,5 @@
-
 import 'dart:convert';
 import 'dart:developer';
-
-
 
 import 'package:ez_text/Widgets/message_card.dart';
 import 'package:ez_text/models/user_model.dart';
@@ -14,7 +11,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/message_model.dart';
-
+import '../../services/fcm_service.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -24,40 +21,43 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-
   late MessageViewModel _messageViewModel;
   late AuthViewModel _authViewModel;
   bool isOnline = true;
   UserModel? receiverUserModel;
 
-  TextEditingController _messageController= new TextEditingController();
+  TextEditingController _messageController = new TextEditingController();
 
   @override
   void initState() {
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _authViewModel = Provider.of<AuthViewModel>(context, listen: false);
       _messageViewModel = Provider.of<MessageViewModel>(context, listen: false);
       setState(() {
-        receiverUserModel= ModalRoute.of(context)?.settings.arguments as UserModel;
+        receiverUserModel =
+            ModalRoute.of(context)?.settings.arguments as UserModel;
       });
     });
     super.initState();
-
   }
 
-
-  Future<void> sendMessage(String msg, String fromId, String toId ) async {
-    try{
+  Future<void> sendMessage(
+      String msg, String fromId, String toId, String? pushToken) async {
+    try {
       await _messageViewModel.sendMessage(msg, fromId, toId);
-      _messageController.clear();
-    }
+      if (pushToken != null) {
+        FCMService.sendPushMessage(
+          pushToken,
+          {"body": _messageController.text, "title": fromId},
+          {"body": _messageController.text, "title": fromId},
+        );
+      }
 
-    catch(e){
+      _messageController.clear();
+    } catch (e) {
       print(e.toString());
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -70,68 +70,66 @@ class _ChatScreenState extends State<ChatScreen> {
           toolbarHeight: 80,
           flexibleSpace: _appBar(),
         ),
-        body:
-        receiverUserModel == null ? CircularProgressIndicator() :
-        SingleChildScrollView(
+        body: receiverUserModel == null
+            ? CircularProgressIndicator()
+            : SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height - 170,
+                      child: Consumer<MessageViewModel>(
+                        builder: (context, _messageViewModel, child) =>
+                            StreamBuilder<QuerySnapshot>(
+                          stream: _messageViewModel.messages,
+                          builder: (context, snapshot) {
+                            switch (snapshot.connectionState) {
+                              case ConnectionState.waiting:
+                              case ConnectionState.none:
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              case ConnectionState.active:
+                              case ConnectionState.done:
+                                print("wassup");
+                                final data = snapshot.data?.docs;
 
-          child: Column(
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height - 170,
-                child: Consumer<MessageViewModel>(
-                  builder: (context, _messageViewModel, child) =>
-                  StreamBuilder<QuerySnapshot>(
-                    stream: _messageViewModel.messages,
-                    builder: (context, snapshot) {
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.waiting:
-                        case ConnectionState.none:
-                          return const Center(child: CircularProgressIndicator());
-                        case ConnectionState.active:
-                        case ConnectionState.done:
-                          print("wassup");
-                        final data=snapshot.data?.docs;
+                                print(data?.first.runtimeType);
 
-                        print(data?.first.runtimeType);
+                                final list = ["hello", "jello", "sup"];
 
-
-                        final list= ["hello","jello","sup"];
-
-
-                          if (list.isNotEmpty) {
-                            return ListView.builder(
-                              itemCount: data?.length,
-                              physics: BouncingScrollPhysics(),
-                              itemBuilder: (context, index) {
-
-                                return MessageCard(receiverUser: receiverUserModel, message:  MessageModel(
-                                  fromId: data?[index]["fromID"],
-                                  msg: data?[index]["msg"],
-                                  read: data?[index]["read"],
-                                  sent: data?[index]["sent"],
-                                  toId: data?[index]["toID"],
-                                  type: data?[index]["type"],
-
-                                ));
-                              },
-                            );
-                          } else {
-                            return Center(
-                              child: Text(
-                                "Say Hiii 👋",
-                                style: TextStyle(fontSize: 30),
-                              ),
-                            );
-                          }
-                      }
-                    },
-                  ),
+                                if (list.isNotEmpty) {
+                                  return ListView.builder(
+                                    itemCount: data?.length,
+                                    physics: BouncingScrollPhysics(),
+                                    itemBuilder: (context, index) {
+                                      return MessageCard(
+                                          receiverUser: receiverUserModel,
+                                          message: MessageModel(
+                                            fromId: data?[index]["fromID"],
+                                            msg: data?[index]["msg"],
+                                            read: data?[index]["read"],
+                                            sent: data?[index]["sent"],
+                                            toId: data?[index]["toID"],
+                                            type: data?[index]["type"],
+                                          ));
+                                    },
+                                  );
+                                } else {
+                                  return Center(
+                                    child: Text(
+                                      "Say Hiii 👋",
+                                      style: TextStyle(fontSize: 30),
+                                    ),
+                                  );
+                                }
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                    _chatInput(),
+                  ],
                 ),
               ),
-              _chatInput(),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -157,7 +155,7 @@ class _ChatScreenState extends State<ChatScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "${ receiverUserModel?.name==null ? "Loading" : receiverUserModel!.name!}",
+                "${receiverUserModel?.name == null ? "Loading" : receiverUserModel!.name!}",
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black,
@@ -245,14 +243,17 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ),
         Consumer<AuthViewModel>(
-          builder: (context, _authViewModel, child)=>
-            MaterialButton(
+          builder: (context, _authViewModel, child) => MaterialButton(
             onPressed: () {
-              sendMessage(_messageController.text, _authViewModel!.loggedInUser!.id!, receiverUserModel!.id! );
-
+              sendMessage(
+                  _messageController.text,
+                  _authViewModel!.loggedInUser!.id!,
+                  receiverUserModel!.id!,
+                  receiverUserModel?.pushToken);
             },
             minWidth: 0,
-            padding: const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 5),
+            padding:
+                const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 5),
             shape: const CircleBorder(),
             color: Colors.blueAccent,
             child: const Icon(

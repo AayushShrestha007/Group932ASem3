@@ -1,4 +1,5 @@
 import 'package:ez_text/view_model/message_viewmodel.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
 
   bool _obscureTextPassword= true;
-
+  String? token;
   TextEditingController _emailController= TextEditingController(
     text: "test@gmail.com"
   );
@@ -50,7 +51,8 @@ class _LoginScreenState extends State<LoginScreen> {
   late MessageViewModel _messageViewModel;
 
 
-  void login(email, password) async{
+  void login() async{
+    String? token = await FirebaseMessaging.instance.getToken();
     if (_formKey.currentState == null){
       return;
     }
@@ -58,10 +60,17 @@ class _LoginScreenState extends State<LoginScreen> {
     _ui.loadState(true);
 
     try{
-      await _authViewModel.login(email,password)
+      await _authViewModel.login(_emailController.text, _passwordController.text, token)
           .then((value){
 
-        Navigator.of(context).pushNamed('/homescreen');
+
+        Navigator.of(context).pushReplacementNamed('/userselect');
+
+        Navigator.of(context).pushNamed('/userselect');
+
+
+        Navigator.of(context).pushNamed('/userselect');
+
 
 
       }).catchError((e){
@@ -206,7 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: 30),
                     ElevatedButton(
                       onPressed: () {
-                          login(_emailController.text, _passwordController.text);
+                          login();
 
                       },
                       style: ElevatedButton.styleFrom(

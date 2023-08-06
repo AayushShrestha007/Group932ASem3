@@ -11,38 +11,42 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-
+  
   late GlobalUIViewModel _ui;
   late AuthViewModel _authViewModel;
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
-  TextEditingController _bioController= TextEditingController();
+  TextEditingController _bioController = TextEditingController();
 
-  void initState(){
-
-    _ui= Provider.of<GlobalUIViewModel>(context, listen: false);
-    _authViewModel= Provider.of<AuthViewModel>(context, listen: false);
-    _passwordController.text=_authViewModel!.loggedInUser!.password!;
-    _nameController.text=_authViewModel!.loggedInUser!.name!;
-    _emailController.text=_authViewModel!.loggedInUser!.email!;
-    _bioController.text= _authViewModel!.loggedInUser!.about!;
+  void initState() {
+    _ui = Provider.of<GlobalUIViewModel>(context, listen: false);
+    _authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+    _passwordController.text = _authViewModel.loggedInUser!.password!;
+    _nameController.text = _authViewModel.loggedInUser!.name!;
+    _emailController.text = _authViewModel.loggedInUser!.email!;
+    _bioController.text = _authViewModel.loggedInUser!.about!;
     super.initState();
   }
 
-
-  void changePassword(String password, String id) async{
+  void updateProfileName(String name, String id) async {
     try {
-      if (password == "") {
+      if (name.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Please Fill Password")));
+          SnackBar(content: Text("Please enter a name")),
+        );
+      } else {
+        await _authViewModel.updateProfileName(name);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Profile name updated")),
+        );
       }
-      else {
-        await _authViewModel.changePassword(password, id);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Password Changed Successfully")));
-      }
-    } catch(e){
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Password too short, please enter a longer password")));
+    } catch (e) {
+      print("ERR :: " + e.toString());
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to update profile name")),
+      );
     }
   }
 
@@ -74,30 +78,22 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                 ),
               ),
-
-              SizedBox(
-                height: 20,
-              ),
-
+              SizedBox(height: 20),
               TextFormField(
                 controller: _bioController,
                 decoration: InputDecoration(
-                    hintText: "Type Bio...",
-                    filled: true,
-                    fillColor: Colors.transparent,
-                    enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 3,
-                          color: Colors.black26,
-                        )
-                    )
+                  hintText: "Type Bio...",
+                  filled: true,
+                  fillColor: Colors.transparent,
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      width: 3,
+                      color: Colors.black26,
+                    ),
+                  ),
                 ),
               ),
-
-              SizedBox(
-                height: 50,
-              ),
-
+              SizedBox(height: 50),
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(
@@ -109,11 +105,7 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                 ),
               ),
-
-              SizedBox(
-                height: 20,
-              ),
-
+              SizedBox(height: 20),
               TextFormField(
                 controller: _emailController,
                 decoration: InputDecoration(
@@ -125,11 +117,7 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                 ),
               ),
-
-              SizedBox(
-                height: 20,
-              ),
-
+              SizedBox(height: 20),
               TextFormField(
 
                 controller: _passwordController,
@@ -142,36 +130,27 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                 ),
               ),
-
-              SizedBox(
-                height: 30,
-              ),
-
+              SizedBox(height: 30),
               Consumer<AuthViewModel>(
-                builder: (context, _authViewModel, child)=>
-                    SizedBox(
-                      height: 70,
-                      width: 200,
-                      child: ElevatedButton(
-                        onPressed: (){
-                          changePassword(_passwordController.text, _authViewModel!.loggedInUser!.id!);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          // primary: Colors.redAccent, //background color of button
-                          // side: BorderSide(width:0, color:Colors.brown), //border width and color
-                          elevation: 3, //elevation of button
-                          shape: RoundedRectangleBorder( //to set border radius to button
-                              borderRadius: BorderRadius.circular(10)
-                          ),
-                        ),
-                        child: Text(
-                          "Update Profile",
-                          style: TextStyle(
-                              fontSize: 18
-                          ),
-                        ),
+                builder: (context, _authViewModel, child) => SizedBox(
+                  height: 70,
+                  width: 200,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      updateProfileName(_nameController.text, _authViewModel.loggedInUser!.id!);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
                     ),
+                    child: Text(
+                      "Update Profile Name",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
