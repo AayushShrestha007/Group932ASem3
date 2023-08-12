@@ -26,11 +26,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   late AuthViewModel _authViewModel;
   late MessageViewModel _messageViewModel;
 
+
   static TextEditingController emailController= TextEditingController();
 
 
 
   List<UserModel> list = [];
+
+
 
   @override
   void initState() {
@@ -49,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
       await _authViewModel.addUser(model!, id!, email);
     }catch(e){
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("A user with this Email does not exist")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("a user with this email does not exist")));
 
     }
   }
@@ -151,70 +154,64 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       body: TabBarView(
         controller: _tabController,
         children: [
-          Container(
-            color: Color(0xff4e91fb),
-            height: MediaQuery.of(context).size.height - 200,
-            width: double.infinity,
-            child: Consumer<AuthViewModel>(
-              builder: (context, _authViewModel, child) => ListView.builder(
-                itemCount: _authViewModel.friendsList.length,
-                itemBuilder: (context, index) {
-                  return ChatUserCard(user: _authViewModel.friendsList[index], indexes: index );
-
-                  // return Slidable(
-                  //   endActionPane: ActionPane(
-                  //     motion: const StretchMotion(),
-                  //     children: [
-                  //       SlidableAction(
-                  //         onPressed: (context) {
-                  //           if (friend != null) {
-                  //             removeFriend(friend.id.toString()); // Use 'id' instead of friend[id]
-                  //           }
-                  //         },
-                  //         backgroundColor: Colors.red,
-                  //         label: 'Remove',
-                  //       ),
-                  //       SlidableAction(
-                  //         onPressed: (context) {
-                  //           _onDismissed();
-                  //         },
-                  //         backgroundColor: Colors.yellow,
-                  //         label: 'Block',
-                  //       ),
-                  //     ],
-                  //   ),
-                  //   child: Padding(
-                  //     padding: EdgeInsets.only(left: 10, right: 10, top: 5),
-                  //     child: Container(
-                  //       decoration: BoxDecoration(
-                  //         border: Border(
-                  //           bottom: BorderSide(color: Color(0xff1976D2)),
-                  //         ),
-                  //       ),
-                  //       child: ListTile(
-                  //
-                  //         onTap: (){
-                  //           _messageViewModel.showMessages( _authViewModel!.loggedInUser!.id,  _authViewModel!.friendsList[index].id );
-                  //
-                  //
-                  //           Navigator.pushNamed(context, '/chatscreen',arguments: ( _authViewModel.friendsList[index]));
-                  //
-                  //         },
-                  //         title: Text(
-                  //           ( _authViewModel.friendsList[index]).name.toString(),
-                  //           style: TextStyle(color: Colors.white),
-                  //         ),
-                  //         subtitle: Text(
-                  //           ( _authViewModel.friendsList[index]).email.toString(),
-                  //           style: TextStyle(color: Colors.white),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // );
-                },
+          Column(
+            children: [
+              SizedBox(
+                height: 20,
               ),
-            ),
+
+              Text("Favorites",
+                style: TextStyle(
+                    color: Colors.white
+                ),
+
+              ),
+
+              Container(
+                color: Color(0xff4e91fb),
+                height: MediaQuery.of(context).size.height - 500,
+                width: double.infinity,
+                child: Consumer<AuthViewModel>(
+                  builder: (context, _authViewModel, child) => ListView.builder(
+                    itemCount: _authViewModel.favoriteList.length,
+                    itemBuilder: (context, index) {
+                      final fromId = _authViewModel.loggedInUser?.id ?? ''; // Replace with the actual current user ID
+                      final toId = _authViewModel.friendsList[index].id ?? '';
+                      return ChatUserCard(user: _authViewModel.favoriteList[index],indexes: index );
+
+                    },
+                  ),
+                ),
+              ),
+
+              SizedBox(
+                height: 20,
+              ),
+
+              Text("Conversation",
+                style: TextStyle(
+                    color: Colors.white
+                ),
+
+              ),
+
+              Container(
+                color: Color(0xff4e91fb),
+                height: MediaQuery.of(context).size.height - 500,
+                width: double.infinity,
+                child: Consumer<AuthViewModel>(
+                  builder: (context, _authViewModel, child) => ListView.builder(
+                    itemCount: _authViewModel.friendsList.length,
+                    itemBuilder: (context, index) {
+                      final fromId = _authViewModel.loggedInUser?.id ?? ''; // Replace with the actual current user ID
+                      final toId = _authViewModel.friendsList[index].id ?? '';
+                      return ChatUserCard(user: _authViewModel.friendsList[index], indexes: index  );
+
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
 
 
@@ -249,6 +246,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           SingleChildScrollView(
             child: Column(
               children: [
+
                 Container(
                   color: Color(0xff4e91fb),
                   height: MediaQuery.of(context).size.height - 200,
@@ -349,7 +347,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                               if (emailController.text.isNotEmpty) {
                                 await addChatUser(
                                   AuthViewModel.loggedInUser,
-                                  AuthViewModel.loggedInUser!.id,
+                                  AuthViewModel.loggedInUser?.id,
                                   emailController.text,
                                 );
                               } else {

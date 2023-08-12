@@ -30,27 +30,19 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^5.0.0
-  image_picker: ^1.0.0
-
-
-
-
-
 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-
-
   cupertino_icons: ^1.0.2
   firebase_core: ^2.13.1
   firebase_auth: ^4.6.2
   cloud_firestore: ^4.8.0
   firebase_storage: ^11.2.3
-#  provider: ^6.0.5
+  provider: ^6.0.5
   flutter_slidable: ^3.0.0
-  flutter_local_notifications: ^14.1.1
+  image_picker: ^1.0.1
+
 
 dev_dependencies:
   flutter_test:
@@ -73,16 +65,10 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-#  assets:
-#    - assets/images/SignUp.png
-#    - assets/images/Login.png
-
 
   # To add assets to your application, add an assets section, like this:
   assets:
      - assets/images/
-
-
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

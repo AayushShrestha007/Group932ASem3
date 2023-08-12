@@ -24,13 +24,14 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _bioController = TextEditingController();
 
+  @override
   void initState() {
     _ui = Provider.of<GlobalUIViewModel>(context, listen: false);
     _authViewModel = Provider.of<AuthViewModel>(context, listen: false);
-    _passwordController.text = _authViewModel.loggedInUser!.password!;
-    _nameController.text = _authViewModel.loggedInUser!.name!;
-    _emailController.text = _authViewModel.loggedInUser!.email!;
-    _bioController.text = _authViewModel.loggedInUser!.about!;
+    _passwordController.text = _authViewModel.loggedInUser?.password ?? '';
+    _nameController.text = _authViewModel.loggedInUser?.name ?? '';
+    _emailController.text = _authViewModel.loggedInUser?.email ?? '';
+    _bioController.text = _authViewModel.loggedInUser?.about ?? '';
     super.initState();
   }
 
@@ -42,7 +43,9 @@ class _EditProfileState extends State<EditProfile> {
         );
       } else {
         await _authViewModel.changePassword(password, id);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Password Changed Successfully")));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Password Changed Successfully")),
+        );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -69,10 +72,12 @@ class _EditProfileState extends State<EditProfile> {
 
       if (imageUrl != null) {
         // Update the image URL in the user model
-        _authViewModel.loggedInUser!.image = imageUrl;
+        if (_authViewModel.loggedInUser != null) {
+          _authViewModel.loggedInUser!.image = imageUrl;
 
-        // Save the updated profile to the database
-        await _authViewModel.updateUserProfile(_authViewModel.loggedInUser!);
+          // Save the updated profile to the database
+          await _authViewModel.updateUserProfile(_authViewModel.loggedInUser!);
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Failed to upload profile image")),
@@ -110,8 +115,7 @@ class _EditProfileState extends State<EditProfile> {
                         width: double.infinity,
                       )
                           : Image.network(
-                        _authViewModel.loggedInUser!.image ??
-                            "https://picsum.photos/id/237/200/300",
+                        _authViewModel.loggedInUser?.image ?? "https://picsum.photos/id/237/200/300",
                         fit: BoxFit.fill,
                         width: double.infinity,
                       ),
@@ -188,7 +192,9 @@ class _EditProfileState extends State<EditProfile> {
                   child: ElevatedButton(
                     onPressed: () {
                       changePassword(
-                          _passwordController.text, _authViewModel.loggedInUser!.id!);
+                        _passwordController.text,
+                        _authViewModel.loggedInUser?.id ?? '',
+                      );
                       _updateProfile();
                     },
                     style: ElevatedButton.styleFrom(
