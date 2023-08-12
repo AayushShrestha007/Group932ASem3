@@ -13,7 +13,7 @@ class MessageModel {
   String? read;
   String? sent;
   String? toId;
-  Type? type;
+  String? type;
 
   MessageModel({
     this.fromId,
@@ -30,7 +30,8 @@ class MessageModel {
     read: json["read"].toString(),
     sent: json["sent"].toString(),
     toId: json["toID"].toString(),
-    type: json["type"].toString() == Type.image.name ? Type.image: Type.text,
+    type: json["type"].toString()
+        // == Type.image.name ? Type.image: Type.text,
   );
 
   Map<String, dynamic> toJson() => {
@@ -39,7 +40,7 @@ class MessageModel {
     "read": read,
     "sent": sent,
     "toID": toId,
-    "type": type?.name,
+    "type": type,
   };
 
   factory MessageModel.fromFirebaseSnapshot(
@@ -51,9 +52,10 @@ class MessageModel {
       read: json["read"].toString(),
       sent: json["sent"].toString(),
       toId: json["toID"].toString(),
-      type: json["type"].toString() == Type.image.name ? Type.image: Type.text,
+      type: json["type"].toString()
+          // == Type.image.name ? Type.image: Type.text,
     );
   }
 
 }
-enum Type {text, image, audio, file}
+// enum Type {text, image, audio, file}

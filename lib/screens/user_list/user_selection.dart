@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../view_model/auth_viewmodel.dart';
+import '../../view_model/message_viewmodel.dart';
 
 
 
@@ -20,13 +21,13 @@ class UserSelection extends StatefulWidget {
 }
 
 class _UserSelectionState extends State<UserSelection> {
-
-
+    late MessageViewModel _messageViewModel;
     late AuthViewModel _authViewModel;
 
     void initState() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+        _messageViewModel= Provider.of<MessageViewModel>(context, listen: false);
       });
       super.initState();
 
@@ -57,6 +58,14 @@ class _UserSelectionState extends State<UserSelection> {
       appBar: AppBar(
         centerTitle: true,
         title: Text("Select User"),
+        actions: [
+          IconButton(
+            onPressed: (){
+              Navigator.of(context).pushNamed('/editprofile');
+          },
+              icon: Icon(Icons.person),
+          )
+        ],
       ),
       body: SafeArea(
 
@@ -103,17 +112,25 @@ class _UserSelectionState extends State<UserSelection> {
                               ),
                             ),
                             child: ListTile(
-                              title: Text((authViewModel.friendsList[index]).name.toString()),
-                                subtitle: Text((authViewModel.friendsList[index]).email.toString()),
+                              onTap: (){
+                                _messageViewModel.showMessages( authViewModel!.loggedInUser!.id, authViewModel!.friendsList[index].id );
+
+
+                                Navigator.pushNamed(context, '/chatscreen',arguments: (authViewModel.friendsList[index]));
+
+                              },
+                              title: Text(
+                                  (authViewModel.friendsList[index]).name.toString(),
+                                style: TextStyle(color: Colors.white),
+                              ),
+                                subtitle: Text(
+                                    (authViewModel.friendsList[index]).email.toString(),
+                                  style: TextStyle(color: Colors.white),
+                                ),
                             ),
                           ),
                         ),
                       );
-                      // return ListTile(
-                      //
-                      //   title: Text((_authViewModel!.friendsList![index])!.name!),
-                      //   subtitle: Text((_authViewModel!.friendsList![index])!.email!),
-                      // );
                     },
                   )
                 )

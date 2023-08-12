@@ -1,3 +1,4 @@
+import 'package:ez_text/view_model/message_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscureTextPassword= true;
 
   TextEditingController _emailController= TextEditingController(
-    text: "test@gmail.com"
+    text: "test3@gmail.com"
   );
   TextEditingController _passwordController= TextEditingController(
     text: "123456"
@@ -46,9 +47,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   late GlobalUIViewModel _ui;
   late AuthViewModel _authViewModel;
+  late MessageViewModel _messageViewModel;
 
 
-  void login() async{
+  void login(email, password) async{
     if (_formKey.currentState == null){
       return;
     }
@@ -56,9 +58,10 @@ class _LoginScreenState extends State<LoginScreen> {
     _ui.loadState(true);
 
     try{
-      await _authViewModel.login(_emailController.text, _passwordController.text)
+      await _authViewModel.login(email,password)
           .then((value){
-        Navigator.of(context).pushReplacementNamed('/editprofile');
+        // _messageViewModel.showMessage();
+        Navigator.of(context).pushNamed('/home');
       }).catchError((e){
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
       });
@@ -72,6 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState(){
     _ui= Provider.of<GlobalUIViewModel>(context, listen: false);
     _authViewModel= Provider.of<AuthViewModel>(context, listen: false);
+    _messageViewModel= Provider.of<MessageViewModel>(context, listen: false);
     super.initState();
   }
 
@@ -80,9 +84,9 @@ class _LoginScreenState extends State<LoginScreen> {
     return Form(
       key: _formKey,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('Login'),
-        ),
+        // appBar: AppBar(
+        //   title: Text('Login'),
+        // ),
         body: Stack(
           children: [
             Container(
@@ -200,7 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: 30),
                     ElevatedButton(
                       onPressed: () {
-                          login();
+                          login(_emailController.text, _passwordController.text);
 
                       },
                       style: ElevatedButton.styleFrom(

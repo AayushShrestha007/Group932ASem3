@@ -1,27 +1,27 @@
-import 'dart:math';
+import 'dart:developer' as developer;
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ez_text/services/firebase_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import '../models/user_model.dart';
-import 'dart:developer' as developer;
 
-class AuthRepository{
-  CollectionReference<UserModel> userRef= FirebaseService.db.collection("users")
+class AuthRepository {
+  CollectionReference<UserModel> userRef = FirebaseService.db
+      .collection("users")
       .withConverter<UserModel>(
-      fromFirestore:(snapshot, _){
-        return UserModel.fromFirebaseSnapshot(snapshot);
-      },
-      toFirestore:(model, _){
-        return model.toJson();
-      }
+    fromFirestore: (snapshot, _) {
+      return UserModel.fromFirebaseSnapshot(snapshot);
+    },
+    toFirestore: (model, _) {
+      return model.toJson();
+    },
   );
 
-
-  Future<UserCredential?> register(UserModel user) async{
+  Future<UserCredential?> register(UserModel user) async {
     try {
-      final response = await userRef
-          .where("name", isEqualTo: user.name!).get();
+      final response = await userRef.where("name", isEqualTo: user.name!).get();
       print("RESPONSE ${response}");
       UserCredential uc = await FirebaseService.firebaseAuth
           .createUserWithEmailAndPassword(
@@ -30,67 +30,67 @@ class AuthRepository{
       user.uid = uc.user!.uid;
 
       await userRef.add(user).then(
-          (DocumentReference doc) async{
-            // developer.log("my document is ${doc.id}");
-            await userRef.doc(doc.id).update({
-              "id":doc.id,
-              "about":""
-            });
-          }
+            (DocumentReference doc) async {
+          await userRef.doc(doc.id).update({
+            "id": doc.id,
+            "about": "",
+          });
+        },
       );
       return uc;
-    } catch(err){
+    } catch (err) {
       rethrow;
     }
   }
 
-
-  Future<UserCredential> login(String email, String password) async{
+  Future<UserCredential> login(String email, String password) async {
     try {
-      UserCredential uc = await FirebaseService.firebaseAuth.
-      signInWithEmailAndPassword(email: email, password: password);
+      UserCredential uc = await FirebaseService.firebaseAuth
+          .signInWithEmailAndPassword(email: email, password: password);
+      print("wassup234");
+      print(uc);
       return uc;
-    } catch(err){
+    } catch (err) {
       rethrow;
     }
   }
 
-  Future<UserModel> getUserDetail(String uid) async{
-    try{
+  Future<UserModel> getUserDetail(String uid) async {
+    try {
       final response = await userRef.where("uid", isEqualTo: uid).get();
       var user = response.docs.single.data();
-      user.pushToken="";
+      user.pushToken = "";
       await userRef.doc(user.id).set(user);
       return user;
-    } catch(err){
+    } catch (err) {
       rethrow;
     }
   }
 
-  Future<UserModel> getUserDetailWithEmail(String email) async{
-    try{
+  Future<UserModel> getUserDetailWithEmail(String email) async {
+    try {
       final response = await userRef.where("email", isEqualTo: email).get();
       var user = response.docs.single.data();
       return user;
-    } catch(err){
+    } catch (err) {
       rethrow;
     }
   }
 
-  Future<UserModel> getUserDetailWithId(String id) async{
-    try{
+  Future<UserModel> getUserDetailWithId(String id) async {
+    try {
       final response = await userRef.where("id", isEqualTo: id).get();
       var user = response.docs.single.data();
       print(user);
       return user;
-    } catch(err){
+    } catch (err) {
       rethrow;
     }
   }
 
-
-  Future<UserModel?> addUser(UserModel model, String id, String email) async{
-    try{
+  Future<UserModel?> addUser(
+      UserModel model, String id, String email, UserModel loggedInUser) async {
+    try {
       final response = await userRef.where("email", isEqualTo: email).get();
 
       userRef.doc(id).update({
@@ -99,19 +99,74 @@ class AuthRepository{
 
       model.myFriends?.add(response.docs.first.id);
 
-      return model;
+      // Update loggedInUser with the new friend
+      loggedInUser.myFriends?.add(response.docs.first.id);
 
-    }catch(err){
+      return model;
+    } catch (err) {
       print("REPO ERROR");
       rethrow;
     }
   }
 
+  Future<UserModel?> addFavorite(UserModel model, String id, String email) async {
+    try {
+      final response = await userRef.where("email", isEqualTo: email).get();
+
+      userRef.doc(id).update({
+        "myFavorite": FieldValue.arrayUnion([response.docs.first.id]),
+      });
+
+      model.myFavorite?.add(response.docs.first.id);
+
+      return model;
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  Future<UserModel?> removeFavorite(UserModel model, String id, String email) async {
+    try {
+      final response = await userRef.where("email", isEqualTo: email).get();
+
+      userRef.doc(id).update({
+        "myFavorite": FieldValue.arrayRemove([response.docs.first.id]),
+      });
+
+      model.myFavorite?.remove(response.docs.first.id);
+      print(model.myFavorite);
+
+      return model;
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+<<<<<<< HEAD
+=======
+  // Future<UserModel?> removeFriend(UserModel model, String id, String email) async {
+  //   try {
+  //     final response = await userRef.where("email", isEqualTo: email).get();
+  //
+  //     userRef.doc(id).update({
+  //       "myFavorite": FieldValue.arrayRemove([response.docs.first.id]),
+  //     });
+  //
+  //     model.myFavorite?.remove(response.docs.first.id);
+  //     print(model.myFavorite);
+  //
+  //     return model;
+  //   } catch (err) {
+  //     rethrow;
+  //   }
+  // }
+
+
   Future<bool> changePassword(String password, String id) async {
     try {
       var res = await FirebaseService.firebaseAuth.currentUser?.updatePassword(password);
       userRef.doc(id).update({
-       "password": password,
+        "password": password,
       });
       return true;
     } catch (err) {
@@ -120,7 +175,72 @@ class AuthRepository{
   }
 
 
+  // Future<bool> toggleFavoriteOn(String id) async {
+  //   try {
+  //
+  //     userRef.doc(id).update({
+  //       "favorite": DateTime.now().millisecondsSinceEpoch.toString(),
+  //     });
+  //     return true;
+  //   } catch (err) {
+  //     rethrow;
+  //   }
+  // }
 
 
 
+
+
+>>>>>>> 8b70671c6186ba80609be275f8d5ff9cdb54d850
+  Future<void> removeFriend(String loggedIn, String friendId) async {
+    try {
+      await userRef.doc(loggedIn).update({
+        "myFriends": FieldValue.arrayRemove([friendId]),
+      });
+      // final response = await userRef.doc(loggedIn).get();
+      //
+      // if (response!=null) {
+      //   String userId = response.docs.first.id;
+      //
+      // }
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  Future<bool> changePassword(String password, String id) async {
+    try {
+      await FirebaseService.firebaseAuth.currentUser!
+          .updatePassword(password);
+      return true;
+    } catch (err) {
+      print("REPO ERR :: " + err.toString());
+      rethrow;
+    }
+  }
+
+  Future<String?> uploadProfileImage(File image, UserModel user) async {
+    try {
+      String imageName = DateTime.now().millisecondsSinceEpoch.toString();
+      String imagePath = "profile_images/$imageName.jpg";
+      TaskSnapshot snapshot = await FirebaseService
+          .storageRef
+          .child(imagePath)
+          .putFile(image);
+      String downloadUrl = await snapshot.ref.getDownloadURL();
+      return downloadUrl;
+    } catch (err) {
+      print("REPO ERR :: " + err.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> updateUserProfile(UserModel user) async {
+    try {
+      await userRef.doc(user.id).update(user.toJson());
+    } catch (err) {
+      print("REPO ERR :: " + err.toString());
+      rethrow;
+    }
+  }
 }

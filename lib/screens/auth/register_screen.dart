@@ -38,10 +38,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
           )
       ).then((value) {
-        // NotificationService.display(
-        //   title: "Welcome to this app",
-        //   body: "Hello ${_authViewModel.loggedInUser?.name},\n Thank you for registering in this application.",
-        // );
+
         Navigator.of(context).pushReplacementNamed("/login");
       })
           .catchError((e) {
