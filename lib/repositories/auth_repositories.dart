@@ -123,10 +123,10 @@ class AuthRepository {
       final response = await userRef.where("email", isEqualTo: email).get();
 
       userRef.doc(id).update({
-        "myFriends": FieldValue.arrayRemove([response.docs.first.id]),
+        "myFavorite": FieldValue.arrayRemove([response.docs.first.id]),
       });
 
-      model.myFriends?.remove(response.docs.first.id);
+      model.myFavorite?.remove(response.docs.first.id);
       print(model.myFavorite);
 
       return model;

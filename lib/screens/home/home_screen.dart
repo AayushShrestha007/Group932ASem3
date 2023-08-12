@@ -14,6 +14,17 @@ import '../../view_model/auth_viewmodel.dart';
 import '../../view_model/message_viewmodel.dart';
 
 
+class ValidateFriendAdd{
+  static String? notNullValidation(String? value){
+
+    if(value!.isEmpty || value==null){
+      return "Email is required";
+    }
+    return null;
+  }
+}
+
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key});
 
@@ -339,7 +350,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       children: [
                         Expanded(
                           flex: 1,
-                          child: TextField(
+                          child: TextFormField(
+                            validator: ValidateFriendAdd.notNullValidation,
                             controller: emailController,
                             decoration: InputDecoration(
                               filled: true,
