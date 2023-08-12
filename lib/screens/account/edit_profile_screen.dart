@@ -21,7 +21,6 @@ class _EditProfileState extends State<EditProfile> {
 
   void initState(){
 
-    _ui= Provider.of<GlobalUIViewModel>(context, listen: false);
     _authViewModel= Provider.of<AuthViewModel>(context, listen: false);
     _passwordController.text=_authViewModel!.loggedInUser!.password!;
     _nameController.text=_authViewModel!.loggedInUser!.name!;

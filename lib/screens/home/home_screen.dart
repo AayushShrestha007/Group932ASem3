@@ -100,7 +100,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             children: [
               CircleAvatar(
                 radius: 30,
-                child: Icon(CupertinoIcons.person),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/editprofile");
+                },
+                    icon: Icon(CupertinoIcons.person),
+                ),
               ),
               SizedBox(width: 10),
               Text(

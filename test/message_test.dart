@@ -17,8 +17,6 @@ Future<void> main() async {
     mockRepo = MockMessageRepo();
   });
 
-
-
   test("test to check exception in send messsage", () async{
     when(mockRepo.sendMessage("hello","1","2")).thenAnswer((_) async{
       throw Exception();
