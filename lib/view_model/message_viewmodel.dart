@@ -10,7 +10,8 @@ class MessageViewModel with ChangeNotifier{
   Stream<QuerySnapshot<Map<String, dynamic>>>? get messages=> _messages;
 
 
-
+  String? _lastFromMessage;
+  get lastFromMessage=> _lastFromMessage;
 
 
 
@@ -24,21 +25,8 @@ class MessageViewModel with ChangeNotifier{
     }
   }
 
-  Future<void> deleteMessage(String? fromId, String? toId) async{
-    try{
-      await MessageRepository().deleteMessage(fromId, toId);
-      _messages = await MessageRepository().showMessages(fromId, toId);
-      notifyListeners();
-
-    }catch(err){
-      rethrow;
-    }
-  }
-
-
-
-
-
+  Map<String, String> _lastMessages = {};
+  Map<String, String> get lastMessages =>_lastMessages;
 
   Future<void> showMessages(String? fromId, String? toId)async {
     try{
@@ -51,6 +39,20 @@ class MessageViewModel with ChangeNotifier{
 
     }
   }
+
+  Future<void> showLastFromMessage(String? fromId, String? toId)async {
+    try{
+      _lastFromMessage = await MessageRepository().showLastFromMessage(fromId, toId);
+      notifyListeners();
+
+    }catch(e){
+      rethrow;
+
+    }
+  }
+
+
+
 
 
 
