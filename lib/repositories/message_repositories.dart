@@ -8,7 +8,7 @@ import 'package:ez_text/models/message_model.dart';
 import '../services/firebase_service.dart';
 
 
-class MessageRepository{
+class MessageRepository {
 
 
 
@@ -44,30 +44,7 @@ class MessageRepository{
     }
   }
 
-  Future<void> deleteMessage(String? fromId, String? toId) async {
-    try{
-      final response1 = await messageRef.where("fromID", isEqualTo: fromId).where("toID", isEqualTo: toId).get();
-      final response2 = await messageRef.where("toID", isEqualTo: fromId).where("fromID", isEqualTo: toId).get();
-      print("wassup");
-      print(response1);
-      // if(response1!=null){
-      //   try{messageRef.doc(response1.docs.first.id).delete();} catch(err){
-      //
-      //   }
-      // }
-      // if(response2!=null){
-      //   messageRef.doc(response2.docs.first.id).delete();
-      // }
-
-      try{messageRef.doc(response1.docs.first.id).delete();} catch(err){}
-      try{messageRef.doc(response2.docs.first.id).delete();} catch(err){}
-
-    }catch(err){
-      rethrow;
-    }
-
-
-  }
+  
 
 
 
@@ -85,8 +62,6 @@ class MessageRepository{
 
   }
 
-<<<<<<< HEAD
-=======
   Future<void> deleteMessage(String? fromId, String? toId) async {
     try{
       final response1 = await messageRef.where("fromID", isEqualTo: fromId).where("toID", isEqualTo: toId).get();
@@ -120,8 +95,8 @@ class MessageRepository{
     var message= response.docs.last.data();
     print("MESSAGE SENT :: "+message.msg.toString());
     return message.msg.toString();
->>>>>>> 8b70671c6186ba80609be275f8d5ff9cdb54d850
 
 
 
+}
 }

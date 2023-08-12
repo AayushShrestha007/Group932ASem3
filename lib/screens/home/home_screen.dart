@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ez_text/services/firebase_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,33 +26,22 @@ class ValidateFriendAdd{
 
 
 class HomeScreen extends StatefulWidget {
-  
   const HomeScreen({Key? key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
-  late Map<String, dynamic> userMap;
-  bool isloading = false;
-  final TextEditingController _search = TextEditingController();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
-
-
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   late TabController? _tabController;
   late AuthViewModel _authViewModel;
   late MessageViewModel _messageViewModel;
-
 
   static TextEditingController emailController= TextEditingController();
 
 
 
   List<UserModel> list = [];
-
-
 
   @override
   void initState() {
@@ -63,28 +51,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     });
 
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    setStatus("Online");
-
-    
-  }
-
-  void setStatus( String Status) async {
-    await _firestore.collection('users').doc(_auth.currentUser.uid).update({
-      "status": status, 
-    });
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-
-    if (state == AppLifecycleState.resumed) {
-      //  online
-      setStatus("Online");
-    }else{
-      // offline
-      setStatus("Offline");
-    }
+    _tabController = TabController(length: 2, vsync: this);
   }
 
 
@@ -114,6 +81,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     super.dispose();
   }
 
+
+
+  
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,7 +106,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             children: [
               CircleAvatar(
                 radius: 30,
-                child: Icon(CupertinoIcons.person),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/editprofile");
+                },
+                    icon: Icon(CupertinoIcons.person),
+                ),
               ),
               SizedBox(width: 10),
               Text(
@@ -203,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
               Text("Favorites",
                 style: TextStyle(
-                    color: Colors.white
+                  color: Colors.white
                 ),
 
               ),
@@ -216,9 +194,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   builder: (context, _authViewModel, child) => ListView.builder(
                     itemCount: _authViewModel.favoriteList.length,
                     itemBuilder: (context, index) {
-                      final fromId = _authViewModel.loggedInUser?.id ?? ''; // Replace with the actual current user ID
-                      final toId = _authViewModel.friendsList[index].id ?? '';
-                      return ChatUserCard(user: _authViewModel.favoriteList[index],indexes: index );
+                      return ChatUserCard(user: _authViewModel.favoriteList[index], indexes: index );
 
                     },
                   ),
@@ -244,10 +220,59 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   builder: (context, _authViewModel, child) => ListView.builder(
                     itemCount: _authViewModel.friendsList.length,
                     itemBuilder: (context, index) {
-                      final fromId = _authViewModel.loggedInUser?.id ?? ''; // Replace with the actual current user ID
-                      final toId = _authViewModel.friendsList[index].id ?? '';
-                      return ChatUserCard(user: _authViewModel.friendsList[index], indexes: index  );
-
+                      return ChatUserCard(user: _authViewModel.friendsList[index], indexes: index );
+                      
+                      // return Slidable(
+                      //   endActionPane: ActionPane(
+                      //     motion: const StretchMotion(),
+                      //     children: [
+                      //       SlidableAction(
+                      //         onPressed: (context) {
+                      //           if (friend != null) {
+                      //             removeFriend(friend.id.toString()); // Use 'id' instead of friend[id]
+                      //           }
+                      //         },
+                      //         backgroundColor: Colors.red,
+                      //         label: 'Remove',
+                      //       ),
+                      //       SlidableAction(
+                      //         onPressed: (context) {
+                      //           _onDismissed();
+                      //         },
+                      //         backgroundColor: Colors.yellow,
+                      //         label: 'Block',
+                      //       ),
+                      //     ],
+                      //   ),
+                      //   child: Padding(
+                      //     padding: EdgeInsets.only(left: 10, right: 10, top: 5),
+                      //     child: Container(
+                      //       decoration: BoxDecoration(
+                      //         border: Border(
+                      //           bottom: BorderSide(color: Color(0xff1976D2)),
+                      //         ),
+                      //       ),
+                      //       child: ListTile(
+                      //
+                      //         onTap: (){
+                      //           _messageViewModel.showMessages( _authViewModel!.loggedInUser!.id,  _authViewModel!.friendsList[index].id );
+                      //
+                      //
+                      //           Navigator.pushNamed(context, '/chatscreen',arguments: ( _authViewModel.friendsList[index]));
+                      //
+                      //         },
+                      //         title: Text(
+                      //           ( _authViewModel.friendsList[index]).name.toString(),
+                      //           style: TextStyle(color: Colors.white),
+                      //         ),
+                      //         subtitle: Text(
+                      //           ( _authViewModel.friendsList[index]).email.toString(),
+                      //           style: TextStyle(color: Colors.white),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // );
                     },
                   ),
                 ),
@@ -360,7 +385,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                               if (emailController.text.isNotEmpty) {
                                 await addChatUser(
                                   AuthViewModel.loggedInUser,
-                                  AuthViewModel.loggedInUser?.id,
+                                  AuthViewModel.loggedInUser!.id,
                                   emailController.text,
                                 );
                               } else {

@@ -32,11 +32,28 @@ class MessageViewModel with ChangeNotifier{
     try{
 
       _messages = await MessageRepository().showMessages(fromId, toId);
+      print("messages" + _messages.toString());
+      // _messages?.forEach((element) async {
+      //   final response = await MessageRepository().showLastFromMessage(fromId, toId);
+      //   print("ersponse" +response.toString());
+      // });
       notifyListeners();
 
     }catch(e){
       rethrow;
 
+    }
+  }
+
+
+  Future<void> deleteMessage(String? fromId, String? toId) async{
+    try{
+      await MessageRepository().deleteMessage(fromId, toId);
+      _messages = await MessageRepository().showMessages(fromId, toId);
+      notifyListeners();
+
+    }catch(err){
+      rethrow;
     }
   }
 
