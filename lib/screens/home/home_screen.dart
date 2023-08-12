@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ez_text/services/firebase_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,20 +12,49 @@ import '../../models/user_model.dart';
 
 
 class HomeScreen extends StatefulWidget {
+  
   const HomeScreen({Key? key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
+  late Map<String, dynamic> userMap;
+  bool isloading = false;
+  final TextEditingController _search = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+
+
   late TabController? _tabController;
   List<UserModel> list = [];
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    WidgetsBinding.instance.addObserver(this);
+    setStatus("Online");
+
+    
+  }
+
+  void setStatus( String Status) async {
+    await _firestore.collection('users').doc(_auth.currentUser.uid).update({
+      "status": status, 
+    });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+
+    if (state == AppLifecycleState.resumed) {
+      //  online
+      setStatus("Online");
+    }else{
+      // offline
+      setStatus("Offline");
+    }
   }
 
   @override
