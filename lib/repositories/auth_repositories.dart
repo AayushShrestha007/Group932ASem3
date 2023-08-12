@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer' as developer;
 import 'dart:io';
 
@@ -88,8 +89,7 @@ class AuthRepository {
     }
   }
 
-  Future<UserModel?> addUser(
-      UserModel model, String id, String email, UserModel loggedInUser) async {
+  Future<UserModel?> addUser(UserModel model, String id, String email) async {
     try {
       final response = await userRef.where("email", isEqualTo: email).get();
 
@@ -99,12 +99,8 @@ class AuthRepository {
 
       model.myFriends?.add(response.docs.first.id);
 
-      // Update loggedInUser with the new friend
-      loggedInUser.myFriends?.add(response.docs.first.id);
-
       return model;
     } catch (err) {
-      print("REPO ERROR");
       rethrow;
     }
   }
@@ -142,8 +138,7 @@ class AuthRepository {
     }
   }
 
-<<<<<<< HEAD
-=======
+
   // Future<UserModel?> removeFriend(UserModel model, String id, String email) async {
   //   try {
   //     final response = await userRef.where("email", isEqualTo: email).get();
@@ -191,7 +186,7 @@ class AuthRepository {
 
 
 
->>>>>>> 8b70671c6186ba80609be275f8d5ff9cdb54d850
+
   Future<void> removeFriend(String loggedIn, String friendId) async {
     try {
       await userRef.doc(loggedIn).update({
@@ -208,16 +203,7 @@ class AuthRepository {
     }
   }
 
-  Future<bool> changePassword(String password, String id) async {
-    try {
-      await FirebaseService.firebaseAuth.currentUser!
-          .updatePassword(password);
-      return true;
-    } catch (err) {
-      print("REPO ERR :: " + err.toString());
-      rethrow;
-    }
-  }
+
 
   Future<String?> uploadProfileImage(File image, UserModel user) async {
     try {
