@@ -89,7 +89,7 @@ class AuthRepository {
   }
 
   Future<UserModel?> addUser(
-      UserModel model, String id, String email, UserModel loggedInUser) async {
+      UserModel model, String id, String email) async {
     try {
       final response = await userRef.where("email", isEqualTo: email).get();
 
@@ -98,9 +98,6 @@ class AuthRepository {
       });
 
       model.myFriends?.add(response.docs.first.id);
-
-      // Update loggedInUser with the new friend
-      loggedInUser.myFriends?.add(response.docs.first.id);
 
       return model;
     } catch (err) {

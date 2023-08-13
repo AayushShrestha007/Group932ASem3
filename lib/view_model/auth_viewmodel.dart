@@ -46,7 +46,7 @@ class AuthViewModel with ChangeNotifier {
   Future<void> addUser(UserModel model, String id, String email) async {
     try {
       _loggedInUser =
-      await AuthRepository().addUser(model, id, email, loggedInUser!);
+      await AuthRepository().addUser(model, id, email);
       if (_loggedInUser == null) {
         throw Exception("Email not found");
       }

@@ -157,6 +157,7 @@ class MockAuthRepo extends _i1.Mock implements _i5.AddFriendsTest {
           ),
         )),
       ) as _i6.Future<_i4.UserModel>);
+
   @override
   _i6.Future<_i4.UserModel?> addUser(
     _i4.UserModel? model,
