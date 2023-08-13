@@ -31,10 +31,10 @@
               "client_type": 3
             },
             {
-              "client_id": "798657438100-umfvp9ff6dmogq4rbpj62nlh9t1h6cch.apps.googleusercontent.com",
+              "client_id": "798657438100-4akppu0okl1l5a09a6mc6nmvcjaekhtt.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.ezText"
+                "bundle_id": "com.example.app"
               }
             }
           ]

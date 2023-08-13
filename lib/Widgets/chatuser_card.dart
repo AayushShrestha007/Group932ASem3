@@ -1,4 +1,3 @@
-import 'package:ez_text/repositories/message_repositories.dart';
 import 'package:ez_text/view_model/message_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +10,7 @@ import '../view_model/auth_viewmodel.dart';
 class ChatUserCard extends StatefulWidget {
   final UserModel user;
   final int indexes;
-  // final MessageModel message;
+
   const ChatUserCard({Key? key, required this.user, required this.indexes})
       : super(key: key);
 
@@ -22,51 +21,39 @@ class ChatUserCard extends StatefulWidget {
 class _ChatUserCardState extends State<ChatUserCard> {
   late AuthViewModel _authViewModel;
   late MessageViewModel _messageViewModel;
+  bool _showCard = true;
+  bool _showButtons = false;
 
+  @override
   void initState() {
     _authViewModel = Provider.of<AuthViewModel>(context, listen: false);
     _messageViewModel = Provider.of<MessageViewModel>(context, listen: false);
     super.initState();
   }
 
-  bool isFavorite= false;
-  bool _showButtons = false;
-
-
-  Future<void> removeFriend(String friendId) async {
-    await _authViewModel.removeFriend(friendId);
-  }
-
-  Future<void> deleteMessage(String fromId, String toId) async {
-    await _messageViewModel.deleteMessage(fromId, toId);
-  }
-
-
   void toggleFavorite(String email) {
     setState(() {
-      bool foundFav= false;
-      for(int i=0; i< _authViewModel.favoriteList.length;i++){
-        print(_authViewModel.favoriteList[i].email);
-        if(_authViewModel.favoriteList[i].email==email){
-          print(1);
-          _authViewModel.removeFavorite(_authViewModel!.loggedInUser!, _authViewModel!.loggedInUser!.id!, email);
-          foundFav=true;
+      bool foundFav = false;
+      for (int i = 0; i < _authViewModel.favoriteList.length; i++) {
+        if (_authViewModel.favoriteList[i].email == email) {
+          _authViewModel.removeFavorite(
+            _authViewModel!.loggedInUser!,
+            _authViewModel!.loggedInUser!.id!,
+            email,
+          );
+          foundFav = true;
           break;
         }
       }
-      if(!foundFav){
-        print(2);
-        _authViewModel.addFavorite(_authViewModel!.loggedInUser!, _authViewModel!.loggedInUser!.id!, email);
+      if (!foundFav) {
+        _authViewModel.addFavorite(
+          _authViewModel!.loggedInUser!,
+          _authViewModel!.loggedInUser!.id!,
+          email,
+        );
       }
-
-      // print(2);
-      // _authViewModel.addFavorite(_authViewModel!.loggedInUser!, _authViewModel!.loggedInUser!.id!, email);
-
-      // _authViewModel.addFavorite(_authViewModel!.loggedInUser!, _authViewModel!.loggedInUser!.id!, email);
-      // isFavorite = !isFavorite;
     });
   }
-
 
   void _showDeleteConfirmationDialog(BuildContext context) {
     showDialog(
@@ -77,23 +64,19 @@ class _ChatUserCardState extends State<ChatUserCard> {
         actions: [
           TextButton(
             onPressed: () {
-              // Close the dialog
               Navigator.pop(context);
             },
             child: Text("No"),
           ),
           Consumer<AuthViewModel>(
-            builder: (context, _authViewModel, child)=> TextButton(
-              onPressed: () async{
+            builder: (context, _authViewModel, child) => TextButton(
+              onPressed: () async {
                 final friend = _authViewModel.friendsList[widget.indexes];
                 deleteMessage(_authViewModel!.loggedInUser!.id!, friend.id.toString());
-                if ( friend!= null) {
-                  removeFriend(friend.id.toString()); // Use 'id' instead of friend[id]
+                if (friend != null) {
+                  removeFriend(friend.id.toString());
                 }
-
-
                 Navigator.pop(context);
-
               },
               child: Text("Yes"),
             ),
@@ -103,39 +86,42 @@ class _ChatUserCardState extends State<ChatUserCard> {
     );
   }
 
+  void _hideConversation() {
+    setState(() {
+      _showCard = false;
+    });
+  }
+
+  Future<void> removeFriend(String friendId) async {
+    await _authViewModel.removeFriend(friendId);
+  }
+
+  Future<void> deleteMessage(String fromId, String toId) async {
+    await _messageViewModel.deleteMessage(fromId, toId);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onLongPress: (){
-        setState(() {
-          _showButtons= true;
-        });
-      },
-      child: Card(
-        elevation: 0, // No shadow for the card
-        color: Colors.transparent, // Make the card background transparent
-        child: InkWell(
-          onTap: () {
-            // Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen()));
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Column(
-              children: [
-                Consumer<MessageViewModel>(
-                    builder: (context, _messageViewModel, child) {
-                      // MessageRepository().showLastFromMessage(_authViewModel!.loggedInUser!.id,
-                      //     _authViewModel!.friendsList[widget.indexes].id);
-                  return ListTile(
+    return Visibility(
+      visible: _showCard,
+      child: GestureDetector(
+        onLongPress: () {
+          setState(() {
+            _showButtons = true;
+          });
+        },
+        child: Card(
+          elevation: 0,
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {},
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Column(
+                children: [
+                  ListTile(
                     onTap: () {
-                      _messageViewModel.showMessages(
-                          _authViewModel!.loggedInUser!.id,
-                          _authViewModel!.friendsList[widget.indexes].id);
-
-                      Navigator.pushNamed(context, '/chatscreen',
-                          arguments:
-                              (_authViewModel.friendsList[widget.indexes]));
+                      // Handle the tap action
                     },
                     contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
                     leading: CircleAvatar(
@@ -146,29 +132,26 @@ class _ChatUserCardState extends State<ChatUserCard> {
                       ),
                     ),
                     title: Text(
-                      widget.user?.name ?? '',
+                      widget.user.name ?? '',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     subtitle: Text(
-                      // _messageViewModel.lastFromMessage,
-                      // _authViewModel.lastMessage[_authViewModel.friendsList[widget.indexes].id].toString(),
-                      "",
+                      "", // Add the appropriate subtitle
                       style: TextStyle(
                         color: Colors.white,
                       ),
                       maxLines: 1,
                     ),
-                    trailing:_showButtons
+                    trailing: _showButtons
                         ? Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
                           onPressed: () {
                             // Handle delete button press
-
                             _showDeleteConfirmationDialog(context);
                           },
                           icon: Icon(Icons.delete, color: Colors.white),
@@ -176,6 +159,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
                         IconButton(
                           onPressed: () {
                             // Handle hide button press
+                            _hideConversation();
                           },
                           icon: Icon(Icons.hide_source, color: Colors.white),
                         ),
@@ -185,10 +169,11 @@ class _ChatUserCardState extends State<ChatUserCard> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         GestureDetector(
-                          onTap: ()=> toggleFavorite(_authViewModel!.friendsList[widget.indexes]!.email!),
+                          onTap: () =>
+                              toggleFavorite(_authViewModel!.friendsList[widget.indexes]!.email!),
                           child: Icon(
-                            isFavorite ? Icons.star : Icons.star_border,
-                            color: isFavorite ? Colors.yellow : Colors.white,
+                            Icons.star_border,
+                            color: Colors.white,
                           ),
                         ),
                         SizedBox(height: 4.0),
@@ -200,15 +185,15 @@ class _ChatUserCardState extends State<ChatUserCard> {
                         ),
                       ],
                     ),
-                  );
-                }),
-                Divider(
-                  color: Colors.white,
-                  thickness: 1.0,
-                  indent: 16.0,
-                  endIndent: 16.0,
-                ),
-              ],
+                  ),
+                  Divider(
+                    color: Colors.white,
+                    thickness: 1.0,
+                    indent: 16.0,
+                    endIndent: 16.0,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

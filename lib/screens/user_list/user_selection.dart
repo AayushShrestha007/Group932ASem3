@@ -8,15 +8,19 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../view_model/auth_viewmodel.dart';
 import '../../view_model/message_viewmodel.dart';
 
+
+
 class UserSelection extends StatefulWidget {
+
+
   const UserSelection({Key? key}) : super(key: key);
+
 
   @override
   State<UserSelection> createState() => _UserSelectionState();
 }
 
 class _UserSelectionState extends State<UserSelection> {
-
     late MessageViewModel _messageViewModel;
     late AuthViewModel _authViewModel;
 
@@ -42,16 +46,11 @@ class _UserSelectionState extends State<UserSelection> {
       }
 }
 
-  
- 
+    void _onDismissed(){
 
-  Future<void> removeFriend(String friendId) async {
-    await _authViewModel.removeFriend(friendId);
-  }
+    }
 
-  void _onDismissed() {
-    // TODO: Implement onDismissed logic if needed
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +68,7 @@ class _UserSelectionState extends State<UserSelection> {
         ],
       ),
       body: SafeArea(
-//to make the pane scrollable
+
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -77,57 +76,55 @@ class _UserSelectionState extends State<UserSelection> {
                 color: Color(0xff4e91fb),
                 height: MediaQuery.of(context).size.height - 200,
                 width: double.infinity,
+
                 child: Consumer<AuthViewModel>(
-                  builder: (context, _authViewModel, child) => ListView.builder(
-                    itemCount: _authViewModel.friendsList.length,
-                    itemBuilder: (context, index) {
-                      final friend = _authViewModel.friendsList[index];
-                      print("FRIENDS" +friend.toString());
+                  builder: (context, authViewModel, child)=>
+                  ListView.builder(
+                    itemCount: authViewModel.loggedInUser?.myFriends?.length ?? 0,
+                    itemBuilder: (context,index){
                       return Slidable(
                         endActionPane: ActionPane(
                           motion: const StretchMotion(),
                           children: [
                             SlidableAction(
-                              onPressed: (context) {
-                                if (friend != null) {
-                                  removeFriend(friend.id.toString()); // Use 'id' instead of friend[id]
-                                }
-                              },
+                                onPressed: (context)=> _onDismissed(),
                               backgroundColor: Colors.red,
+                              // icon: Icons.share,
                               label: 'Remove',
                             ),
                             SlidableAction(
-                              onPressed: (context) {
-                                _onDismissed();
-                              },
+                              onPressed: (context)=> _onDismissed(),
                               backgroundColor: Colors.yellow,
+                              // icon: Icons.remove,
                               label: 'Block',
-                            ),
+                            )
                           ],
                         ),
                         child: Padding(
-                          padding: EdgeInsets.only(left: 10, right: 10, top: 5),
+
+                          padding: EdgeInsets.only(left: 10,right:10,top: 5),
                           child: Container(
                             decoration: BoxDecoration(
                               border: Border(
-                                bottom: BorderSide(color: Color(0xff1976D2)),
+                                bottom: BorderSide(
+                                  color: Color(0xff1976D2)
+                                ),
                               ),
                             ),
                             child: ListTile(
-
                               onTap: (){
-                                _messageViewModel.showMessages( _authViewModel!.loggedInUser!.id,  _authViewModel!.friendsList[index].id );
+                                _messageViewModel.showMessages( authViewModel!.loggedInUser!.id, authViewModel!.friendsList[index].id );
 
 
-                                Navigator.pushNamed(context, '/chatscreen',arguments: ( _authViewModel.friendsList[index]));
+                                Navigator.pushNamed(context, '/chatscreen',arguments: (authViewModel.friendsList[index]));
 
                               },
                               title: Text(
-                                  ( _authViewModel.friendsList[index]).name.toString(),
+                                  (authViewModel.friendsList[index]).name.toString(),
                                 style: TextStyle(color: Colors.white),
                               ),
                                 subtitle: Text(
-                                    ( _authViewModel.friendsList[index]).email.toString(),
+                                    (authViewModel.friendsList[index]).email.toString(),
                                   style: TextStyle(color: Colors.white),
                                 ),
                             ),
@@ -135,14 +132,16 @@ class _UserSelectionState extends State<UserSelection> {
                         ),
                       );
                     },
-                  ),
-                ),
+                  )
+                )
               ),
               Container(
+
                 width: double.infinity,
                 height: 120,
                 decoration: BoxDecoration(
                   color: Color(0xff4e91fb),
+
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
@@ -156,43 +155,45 @@ class _UserSelectionState extends State<UserSelection> {
                             filled: true,
                             fillColor: Colors.white,
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(50),
+                             borderRadius: BorderRadius.circular(50)
                             ),
-                            hintText: "Enter email",
+                            hintText: " Enter email",
                           ),
                         ),
                       ),
                       SizedBox(
                         width: 20,
                       ),
+
+
                       Consumer<AuthViewModel>(
-                        builder: (context, AuthViewModel, child) => IconButton(
-                          iconSize: 50,
-                          color: Colors.white,
-                          onPressed: () async {
-                            if (emailController.text.isNotEmpty) {
-                              await addChatUser(
-                                AuthViewModel.loggedInUser,
-                                AuthViewModel.loggedInUser!.id,
-                                emailController.text,
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("Please enter a valid email")),
-                              );
-                            }
-                          },
-                          icon: Icon(Icons.add_circle),
-                        ),
+                        builder: (context, AuthViewModel, child)=>
+                        IconButton(
+                            iconSize: 50,
+                            color: Colors.white,
+
+                            onPressed: () async{
+                              if(emailController.text.isNotEmpty) {
+                                await addChatUser(AuthViewModel.loggedInUser, AuthViewModel.loggedInUser?.id, emailController.text );
+                              }
+                              else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(
+                                        "Please enter a valid email")));
+                              }
+                        },
+
+                            icon:Icon(Icons.add_circle) ),
                       ),
                     ],
                   ),
                 ),
+
               ),
             ],
           ),
         ),
-      ),
+      )
     );
   }
 }

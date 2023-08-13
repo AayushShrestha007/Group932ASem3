@@ -60,10 +60,8 @@ class _LoginScreenState extends State<LoginScreen> {
     try{
       await _authViewModel.login(email,password)
           .then((value){
-
-        Navigator.of(context).pushNamed('/homescreen');
-
-
+        // _messageViewModel.showMessage();
+        Navigator.of(context).pushNamed('/home');
       }).catchError((e){
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
       });

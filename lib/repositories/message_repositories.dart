@@ -8,7 +8,7 @@ import 'package:ez_text/models/message_model.dart';
 import '../services/firebase_service.dart';
 
 
-class MessageRepository{
+class MessageRepository {
 
 
 
@@ -41,15 +41,20 @@ class MessageRepository{
     }
   }
 
+  
+
+
+
+
+
 
 
   Stream<QuerySnapshot<Map<String, dynamic>>> showMessages(String? fromId, String? toId){
 
-    return FirebaseService.db.collection("messages").where("toID", whereIn:[toId, fromId]).snapshots();
-    // return FirebaseService.db.collection("messages").where(Filter.or(
-    //     Filter("toId", isEqualTo: "kim"),
-    //     Filter("sender_name", isEqualTo: "kim")
-    // )).snapshots();
+    return FirebaseService
+        .db.collection("messages")
+        .where("toID", whereIn:[toId, fromId])
+        .snapshots();
 
 
   }
@@ -88,7 +93,7 @@ class MessageRepository{
     print("MESSAGE SENT :: "+message.msg.toString());
     return message.msg.toString();
 
-  }
 
 
+}
 }
