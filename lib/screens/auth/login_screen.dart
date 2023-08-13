@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscureTextPassword= true;
 
   TextEditingController _emailController= TextEditingController(
-    text: "test@gmail.com"
+    text: "test2@gmail.com"
   );
   TextEditingController _passwordController= TextEditingController(
     text: "123456"
@@ -50,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
   late MessageViewModel _messageViewModel;
 
 
-  void login() async{
+  void login(email, password) async{
     if (_formKey.currentState == null){
       return;
     }
@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _ui.loadState(true);
 
     try{
-      await _authViewModel.login(_emailController.text, _passwordController.text)
+      await _authViewModel.login(email,password)
           .then((value){
 
         Navigator.of(context).pushNamed('/homescreen');
@@ -206,7 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: 30),
                     ElevatedButton(
                       onPressed: () {
-                          login();
+                          login(_emailController.text, _passwordController.text);
 
                       },
                       style: ElevatedButton.styleFrom(

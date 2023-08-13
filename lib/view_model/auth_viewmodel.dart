@@ -19,6 +19,10 @@ class AuthViewModel with ChangeNotifier {
   List<UserModel> _friendsList = [];
   List<UserModel> get friendsList => _friendsList;
 
+
+  List<UserModel> _favoriteList = [];
+  List<UserModel> get favoriteList => _favoriteList;
+
   Future<void> register(UserModel user) async {
     try {
       var response = await AuthRepository().register(user);
@@ -39,6 +43,8 @@ class AuthViewModel with ChangeNotifier {
       print(_loggedInUser?.myFriends);
 
       await getFriendsDetail(_loggedInUser!.myFriends!);
+
+      await getFavoriteDetail(_loggedInUser!.myFavorite!);
 
 
 
@@ -61,6 +67,46 @@ class AuthViewModel with ChangeNotifier {
     }
   }
 
+
+  Future<void> addFavorite(UserModel model, String id, String email) async {
+    try {
+      _loggedInUser = await AuthRepository().addFavorite(model, id, email);
+
+      await getFavoriteDetail(loggedInUser!.myFavorite!);
+      notifyListeners();
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  Future<void> removeFavorite(UserModel model, String id, String email) async {
+    try {
+      _loggedInUser = await AuthRepository().removeFavorite(model, id, email);
+
+      await getFavoriteDetail(_loggedInUser!.myFavorite!);
+      notifyListeners();
+
+
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+
+  Future<void> getFavoriteDetail(List<String> ids) async {
+    print(ids);
+    _favoriteList = [];
+    for(int i=0; i< ids.length;i++){
+      var a= await AuthRepository().getUserDetailWithId(ids[i]);
+      if(a!=null){
+        _favoriteList?.add(a);
+        print(_favoriteList);
+      }
+
+    }
+    notifyListeners();
+  }
+
   Future<void> removeFriend(String friendId) async {
     try {
       await AuthRepository()
@@ -75,22 +121,33 @@ class AuthViewModel with ChangeNotifier {
   }
   Map<String, String> _lastMessage = {};
   Map<String, String> get  lastMessage => _lastMessage;
+
   Future<void> getFriendsDetail(List<String> ids) async {
     print(ids);
     _friendsList = [];
-    for (int i = 0; i < ids.length; i++) {
-      var a = await AuthRepository().getUserDetailWithId(ids[i]);
-      var b = await MessageRepository().showLastFromMessage( _loggedInUser!.id, ids[i]);
-      if(b!= null){
-        lastMessage[ids[i]] = b;
-      }
-      if (a != null) {
+    for(int i=0; i< ids.length;i++){
+      var a= await AuthRepository().getUserDetailWithId(ids[i]);
+      if(a!=null){
         _friendsList?.add(a);
         print(_friendsList);
       }
+
     }
+    // for (int i = 0; i < ids.length; i++) {
+    //   var a = await AuthRepository().getUserDetailWithId(ids[i]);
+    //   var b = await MessageRepository().showLastFromMessage( _loggedInUser!.id, ids[i]);
+    //   if(b!= null){
+    //     lastMessage[ids[i]] = b;
+    //   }
+    //   if (a != null) {
+    //     _friendsList?.add(a);
+    //     print(_friendsList);
+    //   }
+    // }
     notifyListeners();
   }
+
+
 
 
   Future<void> changePassword(String password, String id) async {

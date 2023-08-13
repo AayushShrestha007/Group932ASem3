@@ -14,6 +14,17 @@ import '../../view_model/auth_viewmodel.dart';
 import '../../view_model/message_viewmodel.dart';
 
 
+class ValidateFriendAdd{
+  static String? notNullValidation(String? value){
+
+    if(value!.isEmpty || value==null){
+      return "Email is required";
+    }
+    return null;
+  }
+}
+
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key});
 
@@ -49,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
       await _authViewModel.addUser(model!, id!, email);
     }catch(e){
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("A user with this Email does not exist")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("a user with this email does not exist")));
 
     }
   }
@@ -87,10 +98,17 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              CircleAvatar(
-                radius: 30,
-                child: Icon(CupertinoIcons.person),
+              GestureDetector(
+                onTap: (){
+                  Navigator.pushNamed(context, "/editprofile");
+                },
+                child:  CircleAvatar(
+                  radius: 25,
+                  backgroundImage: NetworkImage( _authViewModel.loggedInUser?.image ?? "https://images.rawpixel.com/image_png_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvdjkzNy1hZXctMTExXzEucG5n.png?s=1_H8mVkttoRFg-j1Zy98vuU3r4qiPliA3fmt1v58igc"),
+                  backgroundColor: Colors.blue,
+                ),
               ),
+
               SizedBox(width: 10),
               Text(
                 "EZText",
@@ -112,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 },
                 icon: Icon(
                   Icons.search,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -133,6 +151,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
           ],
 
+
           bottom: TabBar(
             controller: _tabController,
             labelColor: Colors.black,
@@ -151,104 +170,117 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       body: TabBarView(
         controller: _tabController,
         children: [
-          Container(
-            color: Color(0xff4e91fb),
-            height: MediaQuery.of(context).size.height - 200,
-            width: double.infinity,
-            child: Consumer<AuthViewModel>(
-              builder: (context, _authViewModel, child) => ListView.builder(
-                itemCount: _authViewModel.friendsList.length,
-                itemBuilder: (context, index) {
-                  return ChatUserCard(user: _authViewModel.friendsList[index], indexes: index );
-
-                  // return Slidable(
-                  //   endActionPane: ActionPane(
-                  //     motion: const StretchMotion(),
-                  //     children: [
-                  //       SlidableAction(
-                  //         onPressed: (context) {
-                  //           if (friend != null) {
-                  //             removeFriend(friend.id.toString()); // Use 'id' instead of friend[id]
-                  //           }
-                  //         },
-                  //         backgroundColor: Colors.red,
-                  //         label: 'Remove',
-                  //       ),
-                  //       SlidableAction(
-                  //         onPressed: (context) {
-                  //           _onDismissed();
-                  //         },
-                  //         backgroundColor: Colors.yellow,
-                  //         label: 'Block',
-                  //       ),
-                  //     ],
-                  //   ),
-                  //   child: Padding(
-                  //     padding: EdgeInsets.only(left: 10, right: 10, top: 5),
-                  //     child: Container(
-                  //       decoration: BoxDecoration(
-                  //         border: Border(
-                  //           bottom: BorderSide(color: Color(0xff1976D2)),
-                  //         ),
-                  //       ),
-                  //       child: ListTile(
-                  //
-                  //         onTap: (){
-                  //           _messageViewModel.showMessages( _authViewModel!.loggedInUser!.id,  _authViewModel!.friendsList[index].id );
-                  //
-                  //
-                  //           Navigator.pushNamed(context, '/chatscreen',arguments: ( _authViewModel.friendsList[index]));
-                  //
-                  //         },
-                  //         title: Text(
-                  //           ( _authViewModel.friendsList[index]).name.toString(),
-                  //           style: TextStyle(color: Colors.white),
-                  //         ),
-                  //         subtitle: Text(
-                  //           ( _authViewModel.friendsList[index]).email.toString(),
-                  //           style: TextStyle(color: Colors.white),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // );
-                },
+          Column(
+            children: [
+              SizedBox(
+                height: 20,
               ),
-            ),
+
+              Text("Favorites",
+                style: TextStyle(
+                  color: Colors.white
+                ),
+
+              ),
+
+              Container(
+                color: Color(0xff4e91fb),
+                height: MediaQuery.of(context).size.height - 500,
+                width: double.infinity,
+                child: Consumer<AuthViewModel>(
+                  builder: (context, _authViewModel, child) => ListView.builder(
+                    itemCount: _authViewModel.favoriteList.length,
+                    itemBuilder: (context, index) {
+                      return ChatUserCard(user: _authViewModel.favoriteList[index], indexes: index );
+
+                    },
+                  ),
+                ),
+              ),
+
+              SizedBox(
+                height: 20,
+              ),
+
+              Text("Conversation",
+                style: TextStyle(
+                    color: Colors.white
+                ),
+
+              ),
+
+              Container(
+                color: Color(0xff4e91fb),
+                height: MediaQuery.of(context).size.height - 500,
+                width: double.infinity,
+                child: Consumer<AuthViewModel>(
+                  builder: (context, _authViewModel, child) => ListView.builder(
+                    itemCount: _authViewModel.friendsList.length,
+                    itemBuilder: (context, index) {
+                      return ChatUserCard(user: _authViewModel.friendsList[index], indexes: index );
+                      
+                      // return Slidable(
+                      //   endActionPane: ActionPane(
+                      //     motion: const StretchMotion(),
+                      //     children: [
+                      //       SlidableAction(
+                      //         onPressed: (context) {
+                      //           if (friend != null) {
+                      //             removeFriend(friend.id.toString()); // Use 'id' instead of friend[id]
+                      //           }
+                      //         },
+                      //         backgroundColor: Colors.red,
+                      //         label: 'Remove',
+                      //       ),
+                      //       SlidableAction(
+                      //         onPressed: (context) {
+                      //           _onDismissed();
+                      //         },
+                      //         backgroundColor: Colors.yellow,
+                      //         label: 'Block',
+                      //       ),
+                      //     ],
+                      //   ),
+                      //   child: Padding(
+                      //     padding: EdgeInsets.only(left: 10, right: 10, top: 5),
+                      //     child: Container(
+                      //       decoration: BoxDecoration(
+                      //         border: Border(
+                      //           bottom: BorderSide(color: Color(0xff1976D2)),
+                      //         ),
+                      //       ),
+                      //       child: ListTile(
+                      //
+                      //         onTap: (){
+                      //           _messageViewModel.showMessages( _authViewModel!.loggedInUser!.id,  _authViewModel!.friendsList[index].id );
+                      //
+                      //
+                      //           Navigator.pushNamed(context, '/chatscreen',arguments: ( _authViewModel.friendsList[index]));
+                      //
+                      //         },
+                      //         title: Text(
+                      //           ( _authViewModel.friendsList[index]).name.toString(),
+                      //           style: TextStyle(color: Colors.white),
+                      //         ),
+                      //         subtitle: Text(
+                      //           ( _authViewModel.friendsList[index]).email.toString(),
+                      //           style: TextStyle(color: Colors.white),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // );
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
 
-
-          // StreamBuilder<QuerySnapshot>(
-          //   stream: FirebaseService.db.collection("users").snapshots(),
-          //   builder: (context, snapshot) {
-          //     if (snapshot.connectionState == ConnectionState.waiting) {
-          //       return const Center(child: CircularProgressIndicator());
-          //     }
-          //
-          //     final data = snapshot.data?.docs;
-          //     list = data?.map((e) => UserModel.fromJson(e.data()! as Map<String, dynamic>)).toList() ?? [];
-          //
-          //     if (list.isNotEmpty) {
-          //       return ListView.builder(
-          //         itemCount: list.length,
-          //         physics: BouncingScrollPhysics(),
-          //         itemBuilder: (context, index) {
-          //           return ChatUserCard(user: list[index]);
-          //         },
-          //       );
-          //     }else{
-          //       return Center(
-          //           child: Text("No Users Found",
-          //               style:TextStyle(fontSize: 40))
-          //       );
-          //     }
-          //
-          //     return Container(); // Return an empty container if the list is empty
-          //   },
-          // ),
           SingleChildScrollView(
             child: Column(
               children: [
+//test
                 Container(
                   color: Color(0xff4e91fb),
                   height: MediaQuery.of(context).size.height - 200,
@@ -326,7 +358,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       children: [
                         Expanded(
                           flex: 1,
-                          child: TextField(
+                          child: TextFormField(
+                            validator: ValidateFriendAdd.notNullValidation,
                             controller: emailController,
                             decoration: InputDecoration(
                               filled: true,
