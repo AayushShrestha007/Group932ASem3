@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer' as developer;
 import 'dart:io';
 
@@ -88,8 +89,7 @@ class AuthRepository {
     }
   }
 
-  Future<UserModel?> addUser(
-      UserModel model, String id, String email, UserModel loggedInUser) async {
+  Future<UserModel?> addUser(UserModel model, String id, String email) async {
     try {
       final response = await userRef.where("email", isEqualTo: email).get();
 
@@ -99,12 +99,8 @@ class AuthRepository {
 
       model.myFriends?.add(response.docs.first.id);
 
-      // Update loggedInUser with the new friend
-      loggedInUser.myFriends?.add(response.docs.first.id);
-
       return model;
     } catch (err) {
-      print("REPO ERROR");
       rethrow;
     }
   }
@@ -142,6 +138,58 @@ class AuthRepository {
     }
   }
 
+<<<<<<< HEAD
+=======
+
+  // Future<UserModel?> removeFriend(UserModel model, String id, String email) async {
+  //   try {
+  //     final response = await userRef.where("email", isEqualTo: email).get();
+  //
+  //     userRef.doc(id).update({
+  //       "myFavorite": FieldValue.arrayRemove([response.docs.first.id]),
+  //     });
+  //
+  //     model.myFavorite?.remove(response.docs.first.id);
+  //     print(model.myFavorite);
+  //
+  //     return model;
+  //   } catch (err) {
+  //     rethrow;
+  //   }
+  // }
+
+
+  Future<bool> changePassword(String password, String id) async {
+    try {
+      var res = await FirebaseService.firebaseAuth.currentUser?.updatePassword(password);
+      userRef.doc(id).update({
+        "password": password,
+      });
+      return true;
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+
+  // Future<bool> toggleFavoriteOn(String id) async {
+  //   try {
+  //
+  //     userRef.doc(id).update({
+  //       "favorite": DateTime.now().millisecondsSinceEpoch.toString(),
+  //     });
+  //     return true;
+  //   } catch (err) {
+  //     rethrow;
+  //   }
+  // }
+
+
+
+
+
+
+>>>>>>> Aakriti
   Future<void> removeFriend(String loggedIn, String friendId) async {
     try {
       await userRef.doc(loggedIn).update({
@@ -158,16 +206,7 @@ class AuthRepository {
     }
   }
 
-  Future<bool> changePassword(String password, String id) async {
-    try {
-      await FirebaseService.firebaseAuth.currentUser!
-          .updatePassword(password);
-      return true;
-    } catch (err) {
-      print("REPO ERR :: " + err.toString());
-      rethrow;
-    }
-  }
+
 
   Future<String?> uploadProfileImage(File image, UserModel user) async {
     try {

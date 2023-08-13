@@ -44,7 +44,11 @@ class MessageRepository {
     }
   }
 
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> Aakriti
 
 
 
@@ -62,6 +66,10 @@ class MessageRepository {
 
   }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> Aakriti
   Future<void> deleteMessage(String? fromId, String? toId) async {
     try{
       final response1 = await messageRef.where("fromID", isEqualTo: fromId).where("toID", isEqualTo: toId).get();
@@ -89,14 +97,19 @@ class MessageRepository {
 
 
 
-  Future<String?> showLastFromMessage(String? fromId, String? toId) async{
-    final response = await  messageRef.where("fromID", isEqualTo: fromId).where("toID", isEqualTo: toId).get();
-    print("MESSAGE SENT :: "+response.toString());
-    var message= response.docs.last.data();
-    print("MESSAGE SENT :: "+message.msg.toString());
+  Future<String?> showLastFromMessage(String? fromId, String? toId) async {
+    final response = await messageRef.where("fromID", isEqualTo: fromId).where(
+        "toID", isEqualTo: toId).get();
+    print("MESSAGE SENT :: " + response.toString());
+    var message = response.docs.last.data();
+    print("MESSAGE SENT :: " + message.msg.toString());
     return message.msg.toString();
+<<<<<<< HEAD
 
 
+=======
+  }
+>>>>>>> Aakriti
 
 }
 }
