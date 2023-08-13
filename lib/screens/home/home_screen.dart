@@ -98,15 +98,17 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              CircleAvatar(
-                radius: 30,
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, "/editprofile");
+              GestureDetector(
+                onTap: (){
+                  Navigator.pushNamed(context, "/editprofile");
                 },
-                    icon: Icon(CupertinoIcons.person),
+                child:  CircleAvatar(
+                  radius: 25,
+                  backgroundImage: NetworkImage( _authViewModel.loggedInUser?.image ?? "https://images.rawpixel.com/image_png_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvdjkzNy1hZXctMTExXzEucG5n.png?s=1_H8mVkttoRFg-j1Zy98vuU3r4qiPliA3fmt1v58igc"),
+                  backgroundColor: Colors.blue,
                 ),
               ),
+
               SizedBox(width: 10),
               Text(
                 "EZText",
@@ -128,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 },
                 icon: Icon(
                   Icons.search,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -148,6 +150,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             ),
 
           ],
+
 
           bottom: TabBar(
             controller: _tabController,
