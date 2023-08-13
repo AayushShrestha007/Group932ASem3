@@ -156,6 +156,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
                       children: [
                         IconButton(
                           onPressed: () {
+                            // Handle delete button press
                             _showDeleteConfirmationDialog(context);
                           },
                           icon: Icon(Icons.delete, color: Colors.white),
@@ -173,16 +174,11 @@ class _ChatUserCardState extends State<ChatUserCard> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         GestureDetector(
-                          onTap: () => toggleFavorite(
-                              _authViewModel.friendsList[widget.indexes]!
-                                  .email!),
+                          onTap: () =>
+                              toggleFavorite(_authViewModel!.friendsList[widget.indexes]!.email!),
                           child: Icon(
-                            isFavorite
-                                ? Icons.star
-                                : Icons.star_border,
-                            color: isFavorite
-                                ? Colors.yellow
-                                : Colors.white,
+                            Icons.star_border,
+                            color: Colors.white,
                           ),
                         ),
                         SizedBox(height: 4.0),

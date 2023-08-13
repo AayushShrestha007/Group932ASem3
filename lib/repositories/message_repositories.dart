@@ -8,7 +8,7 @@ import 'package:ez_text/models/message_model.dart';
 import '../services/firebase_service.dart';
 
 
-class MessageRepository{
+class MessageRepository {
 
 
 
@@ -36,14 +36,10 @@ class MessageRepository{
             type: "Text Message",
           )
       );
-
-
-
     } catch(err){
       rethrow;
     }
   }
-
 
 
 
@@ -61,7 +57,6 @@ class MessageRepository{
 
 
   }
-
 
   Future<void> deleteMessage(String? fromId, String? toId) async {
     try{
