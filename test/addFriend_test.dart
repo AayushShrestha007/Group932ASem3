@@ -51,6 +51,6 @@ Future<void> main() async {
   test("empty email test",(){
     String? result = ValidateFriendAdd.notNullValidation("");
     expect(result, "Email is required");
-});
+  });
 
 }

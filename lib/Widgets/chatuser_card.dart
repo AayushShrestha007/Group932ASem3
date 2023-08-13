@@ -1,11 +1,9 @@
-import 'package:ez_text/view_model/message_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../models/message_model.dart';
 import '../models/user_model.dart';
 import '../view_model/auth_viewmodel.dart';
+import '../view_model/message_viewmodel.dart';
 
 class ChatUserCard extends StatefulWidget {
   final UserModel user;
@@ -23,6 +21,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
   late MessageViewModel _messageViewModel;
   bool _showCard = true;
   bool _showButtons = false;
+  bool isFavorite = false;
 
   @override
   void initState() {
@@ -31,14 +30,18 @@ class _ChatUserCardState extends State<ChatUserCard> {
     super.initState();
   }
 
+  Future<void> removeFriend(String friendId) async {
+    await _authViewModel.removeFriend(friendId);
+  }
+
   void toggleFavorite(String email) {
     setState(() {
       bool foundFav = false;
       for (int i = 0; i < _authViewModel.favoriteList.length; i++) {
         if (_authViewModel.favoriteList[i].email == email) {
           _authViewModel.removeFavorite(
-            _authViewModel!.loggedInUser!,
-            _authViewModel!.loggedInUser!.id!,
+            _authViewModel.loggedInUser!,
+            _authViewModel.loggedInUser!.id!,
             email,
           );
           foundFav = true;
@@ -47,8 +50,8 @@ class _ChatUserCardState extends State<ChatUserCard> {
       }
       if (!foundFav) {
         _authViewModel.addFavorite(
-          _authViewModel!.loggedInUser!,
-          _authViewModel!.loggedInUser!.id!,
+          _authViewModel.loggedInUser!,
+          _authViewModel.loggedInUser!.id!,
           email,
         );
       }
@@ -64,7 +67,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.pop(context); // Close the dialog
             },
             child: Text("No"),
           ),
@@ -72,7 +75,8 @@ class _ChatUserCardState extends State<ChatUserCard> {
             builder: (context, _authViewModel, child) => TextButton(
               onPressed: () async {
                 final friend = _authViewModel.friendsList[widget.indexes];
-                deleteMessage(_authViewModel!.loggedInUser!.id!, friend.id.toString());
+                deleteMessage(
+                    _authViewModel.loggedInUser!.id!, friend.id.toString());
                 if (friend != null) {
                   removeFriend(friend.id.toString());
                 }
@@ -90,10 +94,6 @@ class _ChatUserCardState extends State<ChatUserCard> {
     setState(() {
       _showCard = false;
     });
-  }
-
-  Future<void> removeFriend(String friendId) async {
-    await _authViewModel.removeFriend(friendId);
   }
 
   Future<void> deleteMessage(String fromId, String toId) async {
@@ -121,7 +121,12 @@ class _ChatUserCardState extends State<ChatUserCard> {
                 children: [
                   ListTile(
                     onTap: () {
-                      // Handle the tap action
+                      _messageViewModel.showMessages(
+                          _authViewModel.loggedInUser!.id,
+                          _authViewModel.friendsList[widget.indexes].id);
+
+                      Navigator.pushNamed(context, '/chatscreen',
+                          arguments: (_authViewModel.friendsList[widget.indexes]));
                     },
                     contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
                     leading: CircleAvatar(
@@ -132,7 +137,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
                       ),
                     ),
                     title: Text(
-                      widget.user.name ?? '',
+                      widget.user?.name ?? '',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -158,10 +163,10 @@ class _ChatUserCardState extends State<ChatUserCard> {
                         ),
                         IconButton(
                           onPressed: () {
-                            // Handle hide button press
                             _hideConversation();
                           },
-                          icon: Icon(Icons.hide_source, color: Colors.white),
+                          icon:
+                          Icon(Icons.hide_source, color: Colors.white),
                         ),
                       ],
                     )

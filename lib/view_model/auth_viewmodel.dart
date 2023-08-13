@@ -45,15 +45,13 @@ class AuthViewModel with ChangeNotifier {
 
   Future<void> addUser(UserModel model, String id, String email) async {
     try {
-      _loggedInUser =
-      await AuthRepository().addUser(model, id, email);
+      _loggedInUser = await AuthRepository().addUser(model, id, email);
       if (_loggedInUser == null) {
         throw Exception("Email not found");
       }
       await getFriendsDetail(loggedInUser!.myFriends!);
       notifyListeners();
     } catch (err) {
-      print("VM ERR :: " + err.toString());
       rethrow;
     }
   }
@@ -88,8 +86,6 @@ class AuthViewModel with ChangeNotifier {
 
       await getFavoriteDetail(_loggedInUser!.myFavorite!);
       notifyListeners();
-
-
     } catch (err) {
       rethrow;
     }
@@ -98,13 +94,12 @@ class AuthViewModel with ChangeNotifier {
   Future<void> getFavoriteDetail(List<String> ids) async {
     print(ids);
     _favoriteList = [];
-    for(int i=0; i< ids.length;i++){
-      var a= await AuthRepository().getUserDetailWithId(ids[i]);
-      if(a!=null){
+    for (int i = 0; i < ids.length; i++) {
+      var a = await AuthRepository().getUserDetailWithId(ids[i]);
+      if (a != null) {
         _favoriteList?.add(a);
         print(_favoriteList);
       }
-
     }
     notifyListeners();
   }
@@ -123,9 +118,7 @@ class AuthViewModel with ChangeNotifier {
   }
 
   Map<String, String> _lastMessage = {};
-  Map<String, String> get  lastMessage => _lastMessage;
-
-
+  Map<String, String> get lastMessage => _lastMessage;
 
   Future<void> changePassword(String password, String id) async {
     try {
@@ -142,7 +135,7 @@ class AuthViewModel with ChangeNotifier {
   Future<String?> uploadProfileImage(File image) async {
     try {
       String? imageUrl =
-      await AuthRepository().uploadProfileImage(image, loggedInUser!);
+          await AuthRepository().uploadProfileImage(image, loggedInUser!);
       return imageUrl;
     } catch (err) {
       rethrow;

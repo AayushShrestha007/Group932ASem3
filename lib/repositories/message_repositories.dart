@@ -86,11 +86,12 @@ class MessageRepository {
 
 
 
-  Future<String?> showLastFromMessage(String? fromId, String? toId) async{
-    final response = await  messageRef.where("fromID", isEqualTo: fromId).where("toID", isEqualTo: toId).get();
-    print("MESSAGE SENT :: "+response.toString());
-    var message= response.docs.last.data();
-    print("MESSAGE SENT :: "+message.msg.toString());
+  Future<String?> showLastFromMessage(String? fromId, String? toId) async {
+    final response = await messageRef.where("fromID", isEqualTo: fromId).where(
+        "toID", isEqualTo: toId).get();
+    print("MESSAGE SENT :: " + response.toString());
+    var message = response.docs.last.data();
+    print("MESSAGE SENT :: " + message.msg.toString());
     return message.msg.toString();
 
 

@@ -4,6 +4,27 @@ import 'package:provider/provider.dart';
 import '../../models/user_model.dart';
 import '../../view_model/auth_viewmodel.dart';
 
+class ValidateRegister {
+  static String? passwordValidate(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Password is required";
+    }
+    return null;
+  }
+  static String? emailValidate(String? value){
+    if(value==null || value.isEmpty){
+      return "Email is required";
+    }
+    return null;
+  }
+  static String? nameValidate(String? value){
+    if(value==null || value.isEmpty){
+      return "Name is required";
+    }
+    return null;
+  }
+}
+
 class RegisterScreen extends StatefulWidget {
   
   @override
@@ -13,8 +34,8 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
 
 
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _emailController = TextEditingController(text: "test5@gmail.com");
+  TextEditingController _passwordController = TextEditingController(text:"123456");
   TextEditingController _nameController = TextEditingController();
   TextEditingController _phoneNumberController = TextEditingController();
 
