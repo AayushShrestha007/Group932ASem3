@@ -27,15 +27,15 @@ Future<void> main() async {
   });
 
   test(
-      "testing if correct user is found with the provided email or not", () async{
-    final model = UserModel();
-
-    when(mockRepo.getUserDetailWithEmail("test3@gmail.com")).thenAnswer((_) async{
-      return model;
-    });
-    final res= await mockRepo.getUserDetailWithEmail("test3@gmail.com");
-    expect(res, isA<UserModel>());
-    expect(res,model);
+    "testing if correct user is found with the provided email or not", () async{
+      final model = UserModel();
+      
+      when(mockRepo.getUserDetailWithEmail("test3@gmail.com")).thenAnswer((_) async{
+        return model;
+      });
+      final res= await mockRepo.getUserDetailWithEmail("test3@gmail.com");
+      expect(res, isA<UserModel>());
+      expect(res,model);
 
   });
 

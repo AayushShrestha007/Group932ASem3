@@ -24,14 +24,13 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _bioController = TextEditingController();
 
-  @override
-  void initState() {
-    _ui = Provider.of<GlobalUIViewModel>(context, listen: false);
-    _authViewModel = Provider.of<AuthViewModel>(context, listen: false);
-    _passwordController.text = _authViewModel.loggedInUser?.password ?? '';
-    _nameController.text = _authViewModel.loggedInUser?.name ?? '';
-    _emailController.text = _authViewModel.loggedInUser?.email ?? '';
-    _bioController.text = _authViewModel.loggedInUser?.about ?? '';
+  void initState(){
+
+    _authViewModel= Provider.of<AuthViewModel>(context, listen: false);
+    _passwordController.text=_authViewModel!.loggedInUser!.password!;
+    _nameController.text=_authViewModel!.loggedInUser!.name!;
+    _emailController.text=_authViewModel!.loggedInUser!.email!;
+    _bioController.text= _authViewModel!.loggedInUser!.about!;
     super.initState();
   }
 

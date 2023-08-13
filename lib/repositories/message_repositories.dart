@@ -36,9 +36,6 @@ class MessageRepository {
             type: "Text Message",
           )
       );
-
-
-
     } catch(err){
       rethrow;
     }

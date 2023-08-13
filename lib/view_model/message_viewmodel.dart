@@ -45,10 +45,6 @@ class MessageViewModel with ChangeNotifier{
     }
   }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> Aakriti
   Future<void> deleteMessage(String? fromId, String? toId) async{
     try{
       await MessageRepository().deleteMessage(fromId, toId);

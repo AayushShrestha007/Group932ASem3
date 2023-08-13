@@ -138,8 +138,6 @@ class AuthRepository {
     }
   }
 
-<<<<<<< HEAD
-=======
 
   // Future<UserModel?> removeFriend(UserModel model, String id, String email) async {
   //   try {
@@ -189,7 +187,6 @@ class AuthRepository {
 
 
 
->>>>>>> Aakriti
   Future<void> removeFriend(String loggedIn, String friendId) async {
     try {
       await userRef.doc(loggedIn).update({

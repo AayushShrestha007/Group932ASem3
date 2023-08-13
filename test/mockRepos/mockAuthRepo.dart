@@ -26,33 +26,33 @@ import '../addFriend_test.dart' as _i5;
 class _FakeCollectionReference_0<T extends Object?> extends _i1.SmartFake
     implements _i2.CollectionReference<T> {
   _FakeCollectionReference_0(
-      Object parent,
-      Invocation parentInvocation,
-      ) : super(
-    parent,
-    parentInvocation,
-  );
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
 }
 
 class _FakeUserCredential_1 extends _i1.SmartFake
     implements _i3.UserCredential {
   _FakeUserCredential_1(
-      Object parent,
-      Invocation parentInvocation,
-      ) : super(
-    parent,
-    parentInvocation,
-  );
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
 }
 
 class _FakeUserModel_2 extends _i1.SmartFake implements _i4.UserModel {
   _FakeUserModel_2(
-      Object parent,
-      Invocation parentInvocation,
-      ) : super(
-    parent,
-    parentInvocation,
-  );
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
 }
 
 /// A class which mocks [AddFriendsTest].
@@ -65,12 +65,12 @@ class MockAuthRepo extends _i1.Mock implements _i5.AddFriendsTest {
 
   @override
   _i2.CollectionReference<_i4.UserModel> get userRef => (super.noSuchMethod(
-    Invocation.getter(#userRef),
-    returnValue: _FakeCollectionReference_0<_i4.UserModel>(
-      this,
-      Invocation.getter(#userRef),
-    ),
-  ) as _i2.CollectionReference<_i4.UserModel>);
+        Invocation.getter(#userRef),
+        returnValue: _FakeCollectionReference_0<_i4.UserModel>(
+          this,
+          Invocation.getter(#userRef),
+        ),
+      ) as _i2.CollectionReference<_i4.UserModel>);
   @override
   set userRef(_i2.CollectionReference<_i4.UserModel>? _userRef) =>
       super.noSuchMethod(
@@ -91,9 +91,9 @@ class MockAuthRepo extends _i1.Mock implements _i5.AddFriendsTest {
       ) as _i6.Future<_i3.UserCredential?>);
   @override
   _i6.Future<_i3.UserCredential> login(
-      String? email,
-      String? password,
-      ) =>
+    String? email,
+    String? password,
+  ) =>
       (super.noSuchMethod(
         Invocation.method(
           #login,
@@ -115,18 +115,18 @@ class MockAuthRepo extends _i1.Mock implements _i5.AddFriendsTest {
       ) as _i6.Future<_i3.UserCredential>);
   @override
   _i6.Future<_i4.UserModel> getUserDetail(String? uid) => (super.noSuchMethod(
-    Invocation.method(
-      #getUserDetail,
-      [uid],
-    ),
-    returnValue: _i6.Future<_i4.UserModel>.value(_FakeUserModel_2(
-      this,
-      Invocation.method(
-        #getUserDetail,
-        [uid],
-      ),
-    )),
-  ) as _i6.Future<_i4.UserModel>);
+        Invocation.method(
+          #getUserDetail,
+          [uid],
+        ),
+        returnValue: _i6.Future<_i4.UserModel>.value(_FakeUserModel_2(
+          this,
+          Invocation.method(
+            #getUserDetail,
+            [uid],
+          ),
+        )),
+      ) as _i6.Future<_i4.UserModel>);
   @override
   _i6.Future<_i4.UserModel> getUserDetailWithEmail(String? email) =>
       (super.noSuchMethod(
@@ -159,10 +159,10 @@ class MockAuthRepo extends _i1.Mock implements _i5.AddFriendsTest {
       ) as _i6.Future<_i4.UserModel>);
   @override
   _i6.Future<_i4.UserModel?> addUser(
-      _i4.UserModel? model,
-      String? id,
-      String? email,
-      ) =>
+    _i4.UserModel? model,
+    String? id,
+    String? email,
+  ) =>
       (super.noSuchMethod(
         Invocation.method(
           #addUser,
@@ -176,10 +176,10 @@ class MockAuthRepo extends _i1.Mock implements _i5.AddFriendsTest {
       ) as _i6.Future<_i4.UserModel?>);
   @override
   _i6.Future<_i4.UserModel?> addFavorite(
-      _i4.UserModel? model,
-      String? id,
-      String? email,
-      ) =>
+    _i4.UserModel? model,
+    String? id,
+    String? email,
+  ) =>
       (super.noSuchMethod(
         Invocation.method(
           #addFavorite,
@@ -193,10 +193,10 @@ class MockAuthRepo extends _i1.Mock implements _i5.AddFriendsTest {
       ) as _i6.Future<_i4.UserModel?>);
   @override
   _i6.Future<_i4.UserModel?> removeFavorite(
-      _i4.UserModel? model,
-      String? id,
-      String? email,
-      ) =>
+    _i4.UserModel? model,
+    String? id,
+    String? email,
+  ) =>
       (super.noSuchMethod(
         Invocation.method(
           #removeFavorite,
@@ -210,9 +210,9 @@ class MockAuthRepo extends _i1.Mock implements _i5.AddFriendsTest {
       ) as _i6.Future<_i4.UserModel?>);
   @override
   _i6.Future<bool> changePassword(
-      String? password,
-      String? id,
-      ) =>
+    String? password,
+    String? id,
+  ) =>
       (super.noSuchMethod(
         Invocation.method(
           #changePassword,
@@ -225,9 +225,9 @@ class MockAuthRepo extends _i1.Mock implements _i5.AddFriendsTest {
       ) as _i6.Future<bool>);
   @override
   _i6.Future<void> removeFriend(
-      String? loggedIn,
-      String? friendId,
-      ) =>
+    String? loggedIn,
+    String? friendId,
+  ) =>
       (super.noSuchMethod(
         Invocation.method(
           #removeFriend,

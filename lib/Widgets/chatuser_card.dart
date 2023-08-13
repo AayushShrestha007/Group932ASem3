@@ -30,13 +30,10 @@ class _ChatUserCardState extends State<ChatUserCard> {
     super.initState();
   }
 
-<<<<<<< HEAD
-=======
   Future<void> removeFriend(String friendId) async {
     await _authViewModel.removeFriend(friendId);
   }
 
->>>>>>> Aakriti
   void toggleFavorite(String email) {
     setState(() {
       bool foundFav = false;
@@ -70,11 +67,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
         actions: [
           TextButton(
             onPressed: () {
-<<<<<<< HEAD
-              Navigator.pop(context);
-=======
               Navigator.pop(context); // Close the dialog
->>>>>>> Aakriti
             },
             child: Text("No"),
           ),
@@ -128,16 +121,12 @@ class _ChatUserCardState extends State<ChatUserCard> {
                 children: [
                   ListTile(
                     onTap: () {
-<<<<<<< HEAD
-                      // Handle the tap action
-=======
                       _messageViewModel.showMessages(
                           _authViewModel.loggedInUser!.id,
                           _authViewModel.friendsList[widget.indexes].id);
 
                       Navigator.pushNamed(context, '/chatscreen',
                           arguments: (_authViewModel.friendsList[widget.indexes]));
->>>>>>> Aakriti
                     },
                     contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
                     leading: CircleAvatar(
@@ -148,11 +137,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
                       ),
                     ),
                     title: Text(
-<<<<<<< HEAD
-                      widget.user.name ?? '',
-=======
                       widget.user?.name ?? '',
->>>>>>> Aakriti
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -171,20 +156,13 @@ class _ChatUserCardState extends State<ChatUserCard> {
                       children: [
                         IconButton(
                           onPressed: () {
-<<<<<<< HEAD
                             // Handle delete button press
-=======
->>>>>>> Aakriti
                             _showDeleteConfirmationDialog(context);
                           },
                           icon: Icon(Icons.delete, color: Colors.white),
                         ),
                         IconButton(
                           onPressed: () {
-<<<<<<< HEAD
-                            // Handle hide button press
-=======
->>>>>>> Aakriti
                             _hideConversation();
                           },
                           icon:
@@ -196,24 +174,11 @@ class _ChatUserCardState extends State<ChatUserCard> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         GestureDetector(
-<<<<<<< HEAD
                           onTap: () =>
                               toggleFavorite(_authViewModel!.friendsList[widget.indexes]!.email!),
                           child: Icon(
                             Icons.star_border,
                             color: Colors.white,
-=======
-                          onTap: () => toggleFavorite(
-                              _authViewModel.friendsList[widget.indexes]!
-                                  .email!),
-                          child: Icon(
-                            isFavorite
-                                ? Icons.star
-                                : Icons.star_border,
-                            color: isFavorite
-                                ? Colors.yellow
-                                : Colors.white,
->>>>>>> Aakriti
                           ),
                         ),
                         SizedBox(height: 4.0),
